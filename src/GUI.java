@@ -1,7 +1,11 @@
 import javafx.application.Application;
+
 import javafx.event.EventHandler;
+
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -18,45 +22,140 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 
-public class GUI extends Application{
-    Button classic;
-    Button milk_tea;
-    Button punch;
-    Button milk_cap;
-    Button yogurt;
-    Button slush;
-    Button milk_strike;
-    Button espresso;
-    Button seasonal;
-    Button limited;
-    Boolean showBorders = true;
-    Integer menu_rows = 4;
-    Integer menu_cols = 3;
+import javafx.stage.Popup;
 
-    Integer order_cols = 3;
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class GUI extends Application{
+    protected Stage primaryStage;
+    protected Button classic;
+    protected Button milk_tea;
+    protected Button punch;
+    protected Button milk_cap;
+    protected Button yogurt;
+    protected Button slush;
+    protected Button milk_strike;
+    protected Button espresso;
+    protected Button seasonal;
+    protected Button limited;
+    protected Boolean showBorders = true;
+    protected Integer menu_rows = 4;
+    protected Integer menu_cols = 3;
+
+    protected Integer order_cols = 3;
 
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
-            String drink_type = ((Button) mouseEvent.getSource()).getText();
-            System.out.println("Mouse is detecting click from button :: " + drink_type + "!");
-            switch(drink_type)
+            String drinkType = ((Button) mouseEvent.getSource()).getText();
+            class drinkPopup {
+                drinkPopup(ArrayList<String> items) {
+                    Stage popupStage = new Stage();
+
+                    GridPane popupGC = new GridPane();
+                    popupGC.setMinSize(600, 400);
+                    popupGC.setPadding(new Insets(4, 4, 4, 4));
+                    popupGC.setVgap(15);
+
+                    int cnt = 0;
+                    for(String item : items)
+                    {
+                        Button drinkItem = new Button(item);
+                        popupGC.add(drinkItem, 0, cnt);
+                        ++cnt;
+                    }
+
+                    Scene popupScene = new Scene(popupGC);
+                    popupStage.setTitle("Select Drink");
+                    popupStage.setScene(popupScene);
+
+                    popupStage.show();
+                }
+            };
+
+            // Array later becomes all other products in popups.
+            ArrayList<String> items;
+            switch(drinkType)
             {
                 case "Classic":
+                    items = new ArrayList<>(
+                            Arrays.asList("Longan Jujube Tea", "Kung Fu Black Tea", "Kung Fu Green Tea",
+                                        "Kung Fu Oolong Tea", "Kung Fu Honey Tea")
+                    );
+                    break;
                 case "Milk Tea":
+                    items = new ArrayList<>(
+                            Arrays.asList("Kung Fu Milk/Milk Green Tea", "Rosehip Milk Tea", "Coffee Milk Tea",
+                                          "Taro Milk/Milk Green Tea", "Honey Milk/Milk Green Tea", "Thai Milk Tea",
+                                          "Winter Melon Milk Green Tea", "Oolong Milk Tea/ Honey Oolong Milk Tea", "Coconut Milk Tea",
+                                          "Almond Milk Tea")
+                    );
+                    break;
                 case "Punch":
+                    items = new ArrayList<>(
+                            Arrays.asList("Grapefruit Green Tea", "Rosehip Lemonade", "Lychee Punch",
+                                          "Lychee Black Tea", "Sunshine Pineapple Tea", "Strawberry Lemonade",
+                                          "Honey Lemonade", "Peach Oolong Tea", "Mango Green Tea",
+                                          "Passionfruit Green Tea", "Strawberry Lemon Green Tea", "Orange Green Tea")
+                    );
+                    break;
                 case "Milk Cap":
+                    items = new ArrayList<>(
+                            Arrays.asList("Honey Tea Cap (Black/Green/Oolong)", "Matcha Milk Cap", "Cocoa Cream Wow Milk Cap",
+                                          "Sunshine Pineapple Tea Cap", "Winter Melon Tea Cap")
+                    );
+                    break;
                 case "Yogurt":
+                    items = new ArrayList<>(
+                            Arrays.asList("Yogurt Orange", "Yogurt Grapefruit", "Yogurt Green Tea")
+                    );
+                    break;
                 case "Slush":
+                    items = new ArrayList<>(
+                            Arrays.asList("Mango/Mango Snow Slush", "Taro Slush", "Matcha Red Bean Slush")
+                    );
+                    break;
                 case "Milk Strike":
-                case "Seasonal":
+                    items = new ArrayList<>(
+                            Arrays.asList("Herbal Jelly Wow", "Matcha Milk", "Red Bean Wow",
+                                          "Sesame Matcha", "Chair Milk", "Cocoa Cream Wow",
+                                          "Ginger Milk", "Oreo Wow")
+                    );
+                    break;
                 case "Espresso":
+                    items = new ArrayList<>(
+                            Arrays.asList("Signature Coffee", "Caramel Macchiato", "Mocha",
+                                          "Latte", "Cappuccino")
+                    );
+                    break;
+                case "Seasonal":
+                    items = new ArrayList<>(
+                            Arrays.asList("Brown Sugar Ginger", "Pumpkin Oolong Milk Tea", "Purple Yam Latte",
+                                          "Rosehip Pineapple Punch", "Yogurt Peach Lemonade")
+                    );
+                    break;
+                case "What's New":
+                    items = new ArrayList<>(
+                          Arrays.asList("Mango Creamsicle", "Caramel milk Tea", "Lemon-Almond Pie",
+                                        "Sesame oolong Milk Tea", "Sesame Slush", "White Grape Punch",
+                                        "White Grape Slush", "Hershey's Smores Slush/Coffee Slush", "Hershey's Cocoa",
+                                        "Wow Milk Cap (Green/Black/Oolong)", "Coffee Wow Milk Cap")
+                    );
+                    break;
+                default:
+                    items = new ArrayList<>();
+                    break;
             }
+
+            drinkPopup new_popup = new drinkPopup(items);
         }
     };
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("315 Project");
 
         classic = new Button();
