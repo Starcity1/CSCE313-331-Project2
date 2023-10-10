@@ -1,6 +1,8 @@
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -15,7 +17,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
-
 
 public class GUI extends Application{
     Button classic;
@@ -34,39 +35,69 @@ public class GUI extends Application{
 
     Integer order_cols = 3;
 
+    public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent mouseEvent) {
+            String drink_type = ((Button) mouseEvent.getSource()).getText();
+            System.out.println("Mouse is detecting click from button :: " + drink_type + "!");
+            switch(drink_type)
+            {
+                case "Classic":
+                case "Milk Tea":
+                case "Punch":
+                case "Milk Cap":
+                case "Yogurt":
+                case "Slush":
+                case "Milk Strike":
+                case "Seasonal":
+                case "Espresso":
+            }
+        }
+    };
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("315 Project");
 
         classic = new Button();
         classic.setText("Classic");
+        classic.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_tea = new Button();
         milk_tea.setText("Milk Tea");
+        milk_tea.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         punch = new Button();
         punch.setText("Punch");
+        punch.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_cap = new Button();
         milk_cap.setText("Milk Cap");
+        milk_cap.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         yogurt = new Button();
         yogurt.setText("Yogurt");
+        yogurt.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         slush = new Button();
         slush.setText("Slush");
+        slush.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_strike = new Button();
         milk_strike.setText("Milk Strike");
+        milk_strike.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         espresso = new Button();
         espresso.setText("Espresso");
+        espresso.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         seasonal = new Button();
         seasonal.setText("Seasonal");
+        seasonal.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         limited = new Button();
         limited.setText("What's New");
+        limited.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         GridPane layout = new GridPane();
 
