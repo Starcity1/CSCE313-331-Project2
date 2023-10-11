@@ -13,6 +13,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
 import javafx.beans.property.SimpleStringProperty;
+import java.util.List;
 import javafx.scene.chart.XYChart;
 
 import java.time.LocalDate;
@@ -22,6 +23,9 @@ import java.time.YearMonth;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 final class dbSetup  {
@@ -102,8 +106,17 @@ public class ManagerGUI {
         x.setLabel("Day described");
         NumberAxis y = new NumberAxis();
         y.setLabel("Orders made");
-        LineChart ll = new LineChart(x,y);
+        LineChart<Number, Number> ll = new LineChart(x,y);
         ll.setTitle("Orders made.");
+        List<String> xData = data.stream().map(row -> row.get(3).toString()).collect(Collectors.toList());
+        List<Double> yData = data.stream().map(row -> Double.parseDouble(row.get(4).toString())).collect(Collectors.toList());
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        for (int i = 0; i < xData.size(); i++)
+        {
+            series.getData().add(new XYChart.Data<Number, Number>(i, yData.get(i)));
+        }
+        series.setName("Total Cost over 1-day period.");
+        ll.getData().add(series);
         chartCalendarSection.getChildren().add(ll);
 
         // Creating calendar.
