@@ -1,3 +1,4 @@
+import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.chart.LineChart;
@@ -7,12 +8,19 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.collections.ObservableList;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.util.Callback;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 final class dbSetup  {
@@ -45,9 +53,11 @@ class dbConnectionHandler {
 public class ManagerGUI {
     Stage primaryStage;
     private YearMonth currentYearMonth;
+    private ObservableList<ObservableList> data;
     ManagerGUI()
     {
         currentYearMonth = YearMonth.now();
+        data = FXCollections.observableArrayList();
 
         Stage primaryStage = new Stage();
         primaryStage.setTitle("Manager's GUI");
@@ -56,12 +66,13 @@ public class ManagerGUI {
         GridPane primaryGP = new GridPane();
 
         dbConnectionHandler handler = new dbConnectionHandler();
-        ResultSet queryRes = handler.requestData("SELECT * FROM drink LIMIT 10");
+        ResultSet queryRes = handler.requestData("SELECT * FROM order_log WHERE date::DATE = \'2022-01-11\';");
+
+        // Adding results to this array. Array will be then used to generate table and line graph.
+        int queryResSize = 0;
         try {
             if(queryRes == null) {throw new RuntimeException("Error");}
-            while (queryRes.next()) {
-                System.out.println(queryRes.getString("name"));
-            }
+            queryResSize = queryRes.getMetaData().getColumnCount();
         } catch (Exception e) {
             showAndThrowError("Invalid input was entered to database.");
         }
@@ -102,13 +113,41 @@ public class ManagerGUI {
         mainSection.getChildren().add(chartCalendarSection);
 
         // Creating Table
+        VBox tableSection = new VBox();
         Label tableLabel = new Label("Table from orders");
         TableView table = new TableView();
         table.setEditable(true);
+        try{
+            for(int i = 0; i < queryResSize; ++i)
+            {
+                final int j = i;
+                TableColumn tmpCol = new TableColumn(queryRes.getMetaData().getColumnName(i + 1));
+                tmpCol.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
+                    public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+                        return new SimpleStringProperty(param.getValue().get(j).toString());
+                    }
+                });
 
-        TableColumn columnOne = new TableColumn("First Name");
-        table.getColumns().addAll(columnOne);
-        mainSection.getChildren().addAll(tableLabel, table);
+                table.getColumns().addAll(tmpCol);
+            }
+
+            while(queryRes.next())
+            {
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for(int i = 1; i <= queryResSize; ++i)
+                {
+                    row.add(queryRes.getString(i));
+                }
+                data.add(row);
+            }
+            table.setItems(data);
+        } catch(Exception e)
+        {
+            showAndThrowError("Could not load data from database. Aborting.\n" +e.getMessage());
+        }
+
+        tableSection.getChildren().addAll(tableLabel, table);
+        mainSection.getChildren().add(tableSection);
 
         primaryGP.add(mainSection, 0, 1);
 
