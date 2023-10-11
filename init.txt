@@ -1,0 +1,9 @@
+Initializing environment variable for faster access.
+export PATH_TO_FX=/Users/davidrodriguezsanchez/Documents/javafx-sdk-21/lib/
+
+Compilation command:
+javac -p $PATH_TO_FX --add-modules javafx.controls -d bin/ src/*.java
+
+Execution command:
+javac -p $PATH_TO_FX --add-modules javafx.controls bin/App
+

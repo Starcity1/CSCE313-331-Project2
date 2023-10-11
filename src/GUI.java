@@ -2,7 +2,9 @@ import javafx.application.Application;
 
 import javafx.event.EventHandler;
 
+
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -20,9 +22,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import javafx.stage.Popup;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -44,139 +43,13 @@ public class GUI extends Application{
 
     protected Integer order_cols = 3;
 
+    protected static float totalCost;
+
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
             String drinkType = ((Button) mouseEvent.getSource()).getText();
-            class drinkPopup {
-                drinkPopup(ArrayList<String> items) {
-                    Stage popupStage = new Stage();
-
-                    // Creating right side of popup.
-                    GridPane popupGP = new GridPane();
-                    popupGP.setMinSize(600, 400);
-                    popupGP.setPadding(new Insets(4, 4, 4, 4));
-
-                    VBox drinkList = new VBox();
-                    drinkList.setSpacing(25);
-                    ToggleGroup itemToggleGroup = new ToggleGroup();
-                    for(String item : items)
-                    {
-                        RadioButton itemButton = new RadioButton(item);
-                        itemButton.setToggleGroup(itemToggleGroup);
-                        drinkList.getChildren().add(itemButton);
-                    }
-                    popupGP.add(drinkList, 0, 0);
-
-                    Button doneButton = new Button("Done");
-                    popupGP.add(doneButton, 0, 1);
-
-                    // Creating left side of popup
-                    VBox leftSection = new VBox();
-
-                    VBox sizeTemperatureSection = new VBox();
-                    GridPane sizeTemperatureGP = new GridPane();
-
-                    Label sizeLabel = new Label("Size:");
-                    sizeTemperatureGP.add(sizeLabel, 0, 0);
-                    HBox sizeToggles = new HBox();
-                    ToggleGroup sizeToggleGroup = new ToggleGroup();
-                    RadioButton mediumButton = new RadioButton("M: ");
-                    mediumButton.setToggleGroup(sizeToggleGroup);
-                    RadioButton largeButton = new RadioButton("L: ");
-                    largeButton.setToggleGroup(sizeToggleGroup);
-                    sizeToggles.getChildren().addAll(largeButton, mediumButton);
-                    sizeTemperatureGP.add(sizeToggles, 0, 1);
-                    Label temperatureLabel = new Label("Temperature:");
-                    sizeTemperatureGP.add(temperatureLabel, 2, 0);
-                    HBox temperatureToggles = new HBox();
-                    ToggleGroup temperatureToggleGroup = new ToggleGroup();
-                    RadioButton hotButton = new RadioButton("Hot: ");
-                    hotButton.setToggleGroup(temperatureToggleGroup);
-                    RadioButton coldButton = new RadioButton("Cold: ");
-                    coldButton.setToggleGroup(temperatureToggleGroup);
-                    temperatureToggles.getChildren().addAll(hotButton, coldButton);
-                    sizeTemperatureGP.add(temperatureToggles, 2, 1);
-                    sizeTemperatureSection.getChildren().add(sizeTemperatureGP);
-
-                    // 14 Toppings, adding 7 in one column and 7 in the other.
-                    VBox toppingsSection = new VBox();
-                    GridPane toppingsGP = new GridPane();
-                    ArrayList<String> toppingsList = new ArrayList<>(
-                            Arrays.asList("Brown Sugar Wow", "Bubble", "Mango Jelly, Aloe Jelly", "Nata Jelly",
-                                          "Herbal Jelly", "Milk Cap", "Berry Crystal Bubble", "Crystal Bubble",
-                                          "Grape Popping Bubble", "Mango Popping Bubble", "Coffee Popping Bubble", "Red Bean",
-                                          "Oreo", "Pudding")
-                    );
-                    for(int i = 0; i < 7; ++i)
-                    {
-                        CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i));
-                        toppingsGP.add(toppingCheckbox, 0, i);
-                    }
-                    for(int i = 0; i < 7; ++i)
-                    {
-                        CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i + 7));
-                        toppingsGP.add(toppingCheckbox, 1, i);
-                    }
-                    toppingsSection.getChildren().add(toppingsGP);
-
-                    VBox sugarLevelSection = new VBox();
-                    Label sugarLevelLabel = new Label("Sugar Level: ");
-                    sugarLevelSection.getChildren().add(sugarLevelLabel);
-                    HBox sugarToggles = new HBox();
-                    ToggleGroup sugarToggleGroup = new ToggleGroup();
-                    RadioButton sugar100 = new RadioButton("100%");
-                    sugar100.setToggleGroup(sugarToggleGroup);
-                    RadioButton sugar120 = new RadioButton("120%");
-                    sugar120.setToggleGroup(sugarToggleGroup);
-                    RadioButton sugar70 = new RadioButton("70%");
-                    sugar70.setToggleGroup(sugarToggleGroup);
-                    RadioButton sugar50 = new RadioButton("50%");
-                    sugar50.setToggleGroup(sugarToggleGroup);
-                    RadioButton sugar30 = new RadioButton("30%");
-                    sugar30.setToggleGroup(sugarToggleGroup);
-                    RadioButton sugar0 = new RadioButton("0%");
-                    sugar0.setToggleGroup(sugarToggleGroup);
-                    sugarToggles.getChildren().addAll(sugar100, sugar120, sugar70, sugar50, sugar30, sugar0);
-                    sugarLevelSection.getChildren().add(sugarToggles);
-
-
-
-                    VBox iceLevelSection = new VBox();
-                    Label iceLevelLabel = new Label("Ice Level:");
-                    iceLevelSection.getChildren().add(iceLevelLabel);
-                    HBox iceLevelToggles = new HBox();
-                    ToggleGroup iceLevelToggleGroup = new ToggleGroup();
-                    RadioButton regularIce = new RadioButton("Regular Ice");
-                    regularIce.setToggleGroup(iceLevelToggleGroup);
-                    RadioButton lessIce = new RadioButton("Less Ice");
-                    lessIce.setToggleGroup(iceLevelToggleGroup);
-                    RadioButton noIce = new RadioButton("No Ice");
-                    noIce.setToggleGroup(iceLevelToggleGroup);
-                    RadioButton moreIce = new RadioButton("More Ice");
-                    moreIce.setToggleGroup(iceLevelToggleGroup);
-                    iceLevelToggles.getChildren().addAll(regularIce, lessIce, noIce, moreIce);
-                    iceLevelSection.getChildren().add(iceLevelToggles);
-
-
-
-                    VBox notesSection = new VBox();
-                    Label notesLabel = new Label("Notes");
-                    notesSection.getChildren().add(notesLabel);
-                    TextArea notesArea = new TextArea("Insert your notes here...");
-                    notesSection.getChildren().add(notesArea);
-
-
-                    leftSection.getChildren().addAll(sizeTemperatureSection, toppingsSection, sugarLevelSection, iceLevelSection, notesSection);
-                    popupGP.add(leftSection, 1, 0);
-                    Scene popupScene = new Scene(popupGP);
-                    popupStage.setTitle("Select Drink");
-                    popupStage.setScene(popupScene);
-
-                    popupStage.show();
-                }
-            };
-
+            
             // Array later becomes all other products in popups.
             ArrayList<String> items;
             switch(drinkType)
@@ -259,6 +132,8 @@ public class GUI extends Application{
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("315 Project");
+        primaryStage.setMinWidth(300);
+        primaryStage.setMinHeight(200);
 
         classic = new Button();
         classic.setText("Classic");
@@ -300,21 +175,33 @@ public class GUI extends Application{
         limited.setText("What's New");
         limited.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
+        // To Manager's GUI!!!
+        Button managerGUI = new Button("ManagerGUI:");
+        managerGUI.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                ManagerGUI managerGUI = new ManagerGUI();
+            }
+        });
+
         GridPane layout = new GridPane();
 
         GridPane menu = new GridPane();
         HBox.setHgrow(menu, Priority.SOMETIMES);
+        menu.setAlignment(Pos.CENTER);
+        menu.setPadding(new Insets(25, 25, 25, 25));
 
-        GridPane.setConstraints(classic, 0, 0);
-        GridPane.setConstraints(milk_tea, 1, 0);
-        GridPane.setConstraints(punch, 2, 0);
-        GridPane.setConstraints(milk_cap, 0, 1);
-        GridPane.setConstraints(yogurt, 1, 1);
-        GridPane.setConstraints(slush, 2, 1);
-        GridPane.setConstraints(milk_strike, 0, 2);
-        GridPane.setConstraints(espresso, 1, 2);
-        GridPane.setConstraints(seasonal, 2, 2);
-        GridPane.setConstraints(limited, 0, 3);
+        GridPane.setConstraints(managerGUI, 1, 0);
+        GridPane.setConstraints(classic, 0, 1);
+        GridPane.setConstraints(milk_tea, 1, 1);
+        GridPane.setConstraints(punch, 2, 1);
+        GridPane.setConstraints(milk_cap, 0, 2);
+        GridPane.setConstraints(yogurt, 1, 2);
+        GridPane.setConstraints(slush, 2, 2);
+        GridPane.setConstraints(milk_strike, 0, 3);
+        GridPane.setConstraints(espresso, 1, 3);
+        GridPane.setConstraints(seasonal, 2, 3);
+        GridPane.setConstraints(limited, 1, 4);
 
         for (int i = 0; i < menu_cols; i++) {
             ColumnConstraints column = new ColumnConstraints();
@@ -329,7 +216,7 @@ public class GUI extends Application{
         }
 
 
-        menu.getChildren().addAll(classic, milk_tea, punch, milk_cap, yogurt, slush, milk_strike, espresso, seasonal, limited);
+        menu.getChildren().addAll(managerGUI, classic, milk_tea, punch, milk_cap, yogurt, slush, milk_strike, espresso, seasonal, limited);
 
         VBox orderArea = new VBox();
         HBox.setHgrow(orderArea, Priority.SOMETIMES);
@@ -341,7 +228,9 @@ public class GUI extends Application{
 
         Label itemLabel = new Label("Item");
         Label quantityLabel = new Label("Quantity");
-        Label totalItemLabel = new Label("Total");
+
+
+        Label totalItemLabel = new Label("Total: ");
 
         GridPane.setConstraints(itemLabel, 0, 0);
         GridPane.setConstraints(quantityLabel, 1, 0);
@@ -355,9 +244,17 @@ public class GUI extends Application{
             orderGridPane.getColumnConstraints().add(column);
         }
 
-        Label totalLabel = new Label("Total: ");
+        totalCost = 694.20F;
+        HBox payArea = new HBox();
+        payArea.setAlignment(Pos.CENTER_RIGHT);
+        payArea.setSpacing(25);
+        Label totalLabel = new Label(String.format("Total:\t%.2f$", totalCost));
+        Button payButton = new Button("Pay");
+        payArea.getChildren().addAll(totalLabel, payButton);
+        orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
 
-        orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);
+        // Go to pay page.
+        payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new PayPopup().payHandle);
 
         GridPane.setConstraints(menu, 0, 0);
         GridPane.setConstraints(orderArea, 1, 0);
@@ -376,7 +273,7 @@ public class GUI extends Application{
 
         Scene scene = new Scene(layout);
 
-        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(false);
         primaryStage.setScene(scene);
         primaryStage.show();
 
