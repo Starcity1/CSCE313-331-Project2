@@ -13,6 +13,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.chart.XYChart;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -73,6 +74,15 @@ public class ManagerGUI {
         try {
             if(queryRes == null) {throw new RuntimeException("Error");}
             queryResSize = queryRes.getMetaData().getColumnCount();
+            while(queryRes.next())
+            {
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for(int i = 1; i <= queryResSize; ++i)
+                {
+                    row.add(queryRes.getString(i));
+                }
+                data.add(row);
+            }
         } catch (Exception e) {
             showAndThrowError("Invalid input was entered to database.");
         }
@@ -129,16 +139,6 @@ public class ManagerGUI {
                 });
 
                 table.getColumns().addAll(tmpCol);
-            }
-
-            while(queryRes.next())
-            {
-                ObservableList<String> row = FXCollections.observableArrayList();
-                for(int i = 1; i <= queryResSize; ++i)
-                {
-                    row.add(queryRes.getString(i));
-                }
-                data.add(row);
             }
             table.setItems(data);
         } catch(Exception e)
