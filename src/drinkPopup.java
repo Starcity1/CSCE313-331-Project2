@@ -9,7 +9,6 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 class drinkPopup {
     Drink d;
     drinkPopup(ArrayList<String> items, Order ord) {

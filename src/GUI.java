@@ -49,6 +49,8 @@ public class GUI extends Application{
 
     protected Integer order_cols = 3;
 
+    protected static float totalCost;
+
     Order o = new Order();
 
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
@@ -246,7 +248,8 @@ public class GUI extends Application{
 
         orderGridPane.getChildren().addAll(itemLabel, quantityLabel, totalItemLabel);
 
-        Label totalLabel = new Label("Total: ");
+        Label totalLabel = new Label(String.format("Total:\t%.2f$", 0.0));
+        totalCost = 694.20F;
         
         Timeline updateTimeline = new Timeline(
             new KeyFrame(Duration.seconds(1), event -> {
@@ -263,7 +266,8 @@ public class GUI extends Application{
                     GridPane.setConstraints(priceLabel, 2, i + 1);
                     orderGridPane.getChildren().addAll(drinkLabel, drinkQuantityLabel, priceLabel);
                 }
-                totalLabel.setText("Total: " + o.calcPrice() + "$");
+                totalLabel.setText(String.format("Total:\t%.2f$", o.calcPrice()));
+                totalCost = (float)o.calcPrice();
             }
             })
         );
@@ -274,7 +278,17 @@ public class GUI extends Application{
             orderGridPane.getColumnConstraints().add(column);
         }
 
-        orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);
+        HBox payArea = new HBox();
+        payArea.setAlignment(Pos.CENTER_RIGHT);
+        payArea.setSpacing(25);
+        Button payButton = new Button("Pay");
+        payArea.getChildren().addAll(totalLabel, payButton);
+        orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
+
+        // Go to pay page.
+        payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new PayPopup().payHandle);
+
+        //orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);
 
         GridPane.setConstraints(menu, 0, 0);
         GridPane.setConstraints(orderArea, 1, 0);
