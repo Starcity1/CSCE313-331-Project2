@@ -300,21 +300,31 @@ public class GUI extends Application{
         limited.setText("What's New");
         limited.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
+        // To Manager's GUI!!!
+        Button managerGUI = new Button("ManagerGUI:");
+        managerGUI.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                ManagerGUI managerGUI = new ManagerGUI();
+            }
+        });
+
         GridPane layout = new GridPane();
 
         GridPane menu = new GridPane();
         HBox.setHgrow(menu, Priority.SOMETIMES);
 
-        GridPane.setConstraints(classic, 0, 0);
-        GridPane.setConstraints(milk_tea, 1, 0);
-        GridPane.setConstraints(punch, 2, 0);
-        GridPane.setConstraints(milk_cap, 0, 1);
-        GridPane.setConstraints(yogurt, 1, 1);
-        GridPane.setConstraints(slush, 2, 1);
-        GridPane.setConstraints(milk_strike, 0, 2);
-        GridPane.setConstraints(espresso, 1, 2);
-        GridPane.setConstraints(seasonal, 2, 2);
-        GridPane.setConstraints(limited, 0, 3);
+        GridPane.setConstraints(managerGUI, 1, 0);
+        GridPane.setConstraints(classic, 0, 1);
+        GridPane.setConstraints(milk_tea, 1, 1);
+        GridPane.setConstraints(punch, 2, 1);
+        GridPane.setConstraints(milk_cap, 0, 2);
+        GridPane.setConstraints(yogurt, 1, 2);
+        GridPane.setConstraints(slush, 2, 2);
+        GridPane.setConstraints(milk_strike, 0, 3);
+        GridPane.setConstraints(espresso, 1, 3);
+        GridPane.setConstraints(seasonal, 2, 3);
+        GridPane.setConstraints(limited, 1, 4);
 
         for (int i = 0; i < menu_cols; i++) {
             ColumnConstraints column = new ColumnConstraints();
@@ -329,7 +339,7 @@ public class GUI extends Application{
         }
 
 
-        menu.getChildren().addAll(classic, milk_tea, punch, milk_cap, yogurt, slush, milk_strike, espresso, seasonal, limited);
+        menu.getChildren().addAll(managerGUI, classic, milk_tea, punch, milk_cap, yogurt, slush, milk_strike, espresso, seasonal, limited);
 
         VBox orderArea = new VBox();
         HBox.setHgrow(orderArea, Priority.SOMETIMES);
@@ -376,7 +386,7 @@ public class GUI extends Application{
 
         Scene scene = new Scene(layout);
 
-        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(false);
         primaryStage.setScene(scene);
         primaryStage.show();
 
