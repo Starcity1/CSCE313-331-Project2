@@ -17,7 +17,8 @@
  * @param args The command-line arguments passed to the application.
  */
 public class App {
-    public static void main(String[] args) {
+     // run with javac --module-path /lib --add-modules javafx.controls,javafx.fxml -d bin src/App.java
+     public static void main(String[] args) {
         GUI.launch(GUI.class, args);
     }
 }
