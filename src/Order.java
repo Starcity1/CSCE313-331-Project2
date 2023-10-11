@@ -1,24 +1,33 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Order{
-    private static int orderIDCounter = 1;
+    //private static int orderIDCounter = 1;
 
     int orderID;
-    Drink[] drinks;
+    ArrayList<Drink> drinks;
 
-    Order(Drink[] drinks){
-        orderID = orderIDCounter;
-        this.drinks = drinks;
+    public Order(){
+        orderID = 4;
+        drinks = new ArrayList<Drink>();
 
-        orderIDCounter++;
+        //orderIDCounter++;
     }
 
-    Drink[] getDrinks(){
+    ArrayList<Drink> getDrinks(){
         return drinks;
+    }
+
+    void addDrink(Drink d){
+        System.out.println("HELP");
+        drinks.add(d);
+        System.out.print(d);
     }
 
     double calcPrice(){
         double sum = 0.0;
-        for(int i = 0; i < drinks.length; i++){
-            sum += drinks[i].calcPrice();
+        for(int i = 0; i < drinks.size(); i++){
+            sum += drinks.get(i).calcPrice();
         }
         return sum;
     }

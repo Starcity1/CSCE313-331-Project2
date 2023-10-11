@@ -1,3 +1,5 @@
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 
 import javafx.event.EventHandler;
@@ -25,6 +27,10 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
 public class GUI extends Application{
     protected Stage primaryStage;
     protected Button classic;
@@ -43,7 +49,7 @@ public class GUI extends Application{
 
     protected Integer order_cols = 3;
 
-    protected static float totalCost;
+    Order o = new Order();
 
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
@@ -124,7 +130,9 @@ public class GUI extends Application{
                     break;
             }
 
-            drinkPopup new_popup = new drinkPopup(items);
+            drinkPopup new_popup = new drinkPopup(items, o);
+
+
         }
     };
 
@@ -238,23 +246,35 @@ public class GUI extends Application{
 
         orderGridPane.getChildren().addAll(itemLabel, quantityLabel, totalItemLabel);
 
+        Label totalLabel = new Label("Total: ");
+        
+        Timeline updateTimeline = new Timeline(
+            new KeyFrame(Duration.seconds(1), event -> {
+            ArrayList<Drink> d = o.getDrinks();
+            if(d != null){
+                for(int i = 0; i < d.size(); i++){
+                    Label drinkLabel = new Label(d.get(i).getName());
+                    Label drinkQuantityLabel = new Label("1"); // Replace this with the actual quantity
+                    Label priceLabel = new Label(Double.toString(d.get(i).getPrice()));
+            
+                    // Adjust the row index to start from 1, not -1
+                    GridPane.setConstraints(drinkLabel, 0, i + 1);
+                    GridPane.setConstraints(drinkQuantityLabel, 1, i + 1);
+                    GridPane.setConstraints(priceLabel, 2, i + 1);
+                    orderGridPane.getChildren().addAll(drinkLabel, drinkQuantityLabel, priceLabel);
+                }
+                totalLabel.setText("Total: " + o.calcPrice() + "$");
+            }
+            })
+        );
+
         for (int i = 0; i < order_cols; i++) {
             ColumnConstraints column = new ColumnConstraints();
             column.setPercentWidth(100/order_cols);
             orderGridPane.getColumnConstraints().add(column);
         }
 
-        totalCost = 694.20F;
-        HBox payArea = new HBox();
-        payArea.setAlignment(Pos.CENTER_RIGHT);
-        payArea.setSpacing(25);
-        Label totalLabel = new Label(String.format("Total:\t%.2f$", totalCost));
-        Button payButton = new Button("Pay");
-        payArea.getChildren().addAll(totalLabel, payButton);
-        orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
-
-        // Go to pay page.
-        payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new PayPopup().payHandle);
+        orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);
 
         GridPane.setConstraints(menu, 0, 0);
         GridPane.setConstraints(orderArea, 1, 0);
@@ -283,5 +303,8 @@ public class GUI extends Application{
             menu.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
             layout.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         }
+
+        updateTimeline.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
+        updateTimeline.play();
     }
 }
