@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -22,7 +23,6 @@ import javafx.scene.paint.Color;
 
 import javafx.stage.Popup;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -43,6 +43,8 @@ public class GUI extends Application{
     protected Integer menu_cols = 3;
 
     protected Integer order_cols = 3;
+
+    protected static float totalCost;
 
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
@@ -259,6 +261,8 @@ public class GUI extends Application{
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("315 Project");
+        primaryStage.setMinWidth(300);
+        primaryStage.setMinHeight(200);
 
         classic = new Button();
         classic.setText("Classic");
@@ -313,6 +317,8 @@ public class GUI extends Application{
 
         GridPane menu = new GridPane();
         HBox.setHgrow(menu, Priority.SOMETIMES);
+        menu.setAlignment(Pos.CENTER);
+        menu.setPadding(new Insets(25, 25, 25, 25));
 
         GridPane.setConstraints(managerGUI, 1, 0);
         GridPane.setConstraints(classic, 0, 1);
@@ -351,7 +357,9 @@ public class GUI extends Application{
 
         Label itemLabel = new Label("Item");
         Label quantityLabel = new Label("Quantity");
-        Label totalItemLabel = new Label("Total");
+
+
+        Label totalItemLabel = new Label("Total: ");
 
         GridPane.setConstraints(itemLabel, 0, 0);
         GridPane.setConstraints(quantityLabel, 1, 0);
@@ -365,9 +373,17 @@ public class GUI extends Application{
             orderGridPane.getColumnConstraints().add(column);
         }
 
-        Label totalLabel = new Label("Total: ");
+        totalCost = 694.20F;
+        HBox payArea = new HBox();
+        payArea.setAlignment(Pos.CENTER_RIGHT);
+        payArea.setSpacing(25);
+        Label totalLabel = new Label(String.format("Total:\t%.2f$", totalCost));
+        Button payButton = new Button("Pay");
+        payArea.getChildren().addAll(totalLabel, payButton);
+        orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
 
-        orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);
+        // Go to pay page.
+        payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new PayPopup().payHandle);
 
         GridPane.setConstraints(menu, 0, 0);
         GridPane.setConstraints(orderArea, 1, 0);
