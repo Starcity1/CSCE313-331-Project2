@@ -9,9 +9,9 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 class drinkPopup {
-    drinkPopup(ArrayList<String> items) {
+    Drink d;
+    drinkPopup(ArrayList<String> items, Order ord) {
         Stage popupStage = new Stage();
 
         // Creating right side of popup.
@@ -32,6 +32,9 @@ class drinkPopup {
 
         Button doneButton = new Button("Done");
         popupGP.add(doneButton, 0, 1);
+
+        Button closeButton = new Button("Close");
+        popupGP.add(closeButton, 1, 1);
 
         // Creating left side of popup
         VBox leftSection = new VBox();
@@ -135,6 +138,36 @@ class drinkPopup {
         popupStage.setScene(popupScene);
 
         popupStage.show();
+
+        closeButton.setOnAction(event -> {
+            popupStage.close();
+        });
+
+        doneButton.setOnAction(event -> {
+            // d = new Drink(((RadioButton)itemToggleGroup.getSelectedToggle()).getText(),
+            // "WIP",
+            // ((RadioButton)sizeToggleGroup.getSelectedToggle()).getText(),
+            // ((RadioButton)temperatureToggleGroup.getSelectedToggle()).getText(),
+            // ((RadioButton)iceLevelToggleGroup.getSelectedToggle()).getText(),
+            // ((RadioButton)sugarToggleGroup.getSelectedToggle()).getText(),
+            // "0.0",
+            // new String[3]);
+
+            //d = new Drink("test", "test", "test","test","test","100%","0.0");
+
+            String name = ((RadioButton)itemToggleGroup.getSelectedToggle()).getText();
+            String size = ((RadioButton)sizeToggleGroup.getSelectedToggle()).getText();
+            String temp = ((RadioButton)temperatureToggleGroup.getSelectedToggle()).getText();
+            String ice_level = ((RadioButton)iceLevelToggleGroup.getSelectedToggle()).getText();
+            String sugar_level = ((RadioButton)sugarToggleGroup.getSelectedToggle()).getText();
+
+            d = new Drink(name, "Some Category", size, temp, ice_level, sugar_level, "0.0");
+            System.out.print(((RadioButton)sugarToggleGroup.getSelectedToggle()).getText());
+            ord.addDrink(d);
+            popupStage.close();
+        });
     }
+
+
 
 };
