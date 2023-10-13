@@ -2,6 +2,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javafx.event.EventHandler;
 
@@ -19,11 +20,12 @@ public class PayPopup extends GUI {
     dbConnectionHandler db;
     Order ord;
     private double tip = 0.0;
+    Map<String,Double> toppingsMap;
 
-    PayPopup(dbConnectionHandler handler, Order o){
+    PayPopup(dbConnectionHandler handler, Order o, Map<String,Double> toppingsMap){
         db = handler;
-        System.out.print("FIRST OR");
         ord = o;
+        this.toppingsMap = toppingsMap;
     }
 
     public EventHandler<MouseEvent> payHandle = new EventHandler<>() {
@@ -102,10 +104,17 @@ public class PayPopup extends GUI {
                     LocalDate currentDate = LocalDate.now();
                     LocalTime currentTime = LocalTime.now();
 
+                    int tpID = db.requestInt("select MAX(toppingid) from topping;") + 1;
+
                     for(int i = 0; i < drinks.size(); i++) {
-                        System.out.print("SECOND OR");
                         db.executeUpdate(String.format("INSERT INTO drink (drinkid, orderid, name, category, size, temp, ice_level, sugar_level, price) VALUES ('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%.2f');",
                         drinks.get(i).getDrinkID(), ord.getOrderID(), drinks.get(i).getName(), drinks.get(i).getCategory(), drinks.get(i).getSize(), drinks.get(i).getTemp(), drinks.get(i).getIce_level(), drinks.get(i).getSugar_level(), drinks.get(i).getPrice()));
+                        ArrayList<String> tpp = drinks.get(i).getToppings();
+                        for(int j = 0; j < tpp.size(); j++){
+                            db.executeUpdate(String.format("INSERT INTO topping (toppingid, drinkid, name, quantity, price) VALUES ('%s', '%s', '%s', '%d', '%.2f');",
+                            tpID, drinks.get(i).getDrinkID(), tpp.get(j), 1, toppingsMap.get(tpp.get(j))));
+                            tpID++;
+                        }
                     }
                     String insertQuery = String.format(
                         "INSERT INTO order_log (orderID, empID, date, time, total, tip) VALUES (%d, %d, '%s', '%s', %f, %f);",

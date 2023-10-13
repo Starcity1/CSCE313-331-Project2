@@ -252,7 +252,7 @@ public class GUI extends Application{
         orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
 
         // Go to pay page.
-        PayPopup pp = new PayPopup(handler, o);
+        PayPopup pp = new PayPopup(handler, o, toppingsMap);
         payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, pp.payHandle);
 
         //orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);

@@ -186,14 +186,15 @@ class drinkPopup {
 
             ObservableList<Node> cblist = toppingsGP.getChildren();
 
-
+            ArrayList<String> tppList = new ArrayList<String>();
             for(int i = 0; i < toppings.length; i++){
                 if(((CheckBox)cblist.get(i)).isSelected()){
                     price += toppingsMap.get(toppings[i]);
+                    tppList.add(toppings[i]);
                 }
             }
 
-            d = new Drink(name, drinkType, size, temp, ice_level, sugar_level, price);
+            d = new Drink(name, drinkType, size, temp, ice_level, sugar_level, price, tppList);
             System.out.print(((RadioButton)sugarToggleGroup.getSelectedToggle()).getText());
             ord.addDrink(d);
             popupStage.close();
