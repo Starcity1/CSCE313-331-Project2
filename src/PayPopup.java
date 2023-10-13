@@ -1,3 +1,6 @@
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import javafx.event.EventHandler;
@@ -15,6 +18,7 @@ public class PayPopup extends GUI {
 
     dbConnectionHandler db;
     Order ord;
+    private double tip = 0.0;
 
     PayPopup(dbConnectionHandler handler, Order o){
         db = handler;
@@ -58,6 +62,23 @@ public class PayPopup extends GUI {
             tipSection.getChildren().addAll(tipLabel, noTip, oneDollarTip, twoDollarTip);
             payGP.add(tipSection, 0, 1);
 
+            // Create a ToggleGroup to group the radio buttons
+            ToggleGroup tipToggleGroup = new ToggleGroup();
+            noTip.setToggleGroup(tipToggleGroup);
+            oneDollarTip.setToggleGroup(tipToggleGroup);
+            twoDollarTip.setToggleGroup(tipToggleGroup);
+    
+            // Add a change listener to the ToggleGroup
+            tipToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == noTip) {
+                    tip = 0.0;
+                } else if (newValue == oneDollarTip) {
+                    tip = 1.0;
+                } else if (newValue == twoDollarTip) {
+                    tip = 2.0;
+                }
+            });
+
             VBox receiptSection = new VBox();
             receiptSection.setAlignment(Pos.TOP_CENTER);
             receiptSection.setSpacing(30);
@@ -76,11 +97,22 @@ public class PayPopup extends GUI {
                 @Override
                 public void handle(MouseEvent mouseEvent1) {
                     ArrayList<Drink> drinks = ord.getDrinks();
+                    int empID = 0001;
+                    
+                    LocalDate currentDate = LocalDate.now();
+                    LocalTime currentTime = LocalTime.now();
+
                     for(int i = 0; i < drinks.size(); i++) {
                         System.out.print("SECOND OR");
                         db.executeUpdate(String.format("INSERT INTO drink (drinkid, orderid, name, category, size, temp, ice_level, sugar_level, price) VALUES ('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%.2f');",
                         drinks.get(i).getDrinkID(), ord.getOrderID(), drinks.get(i).getName(), drinks.get(i).getCategory(), drinks.get(i).getSize(), drinks.get(i).getTemp(), drinks.get(i).getIce_level(), drinks.get(i).getSugar_level(), drinks.get(i).getPrice()));
                     }
+                    String insertQuery = String.format(
+                        "INSERT INTO order_log (orderID, empID, date, time, total, tip) VALUES (%d, %d, '%s', '%s', %f, %f);",
+                        ord.orderID, empID, currentDate, currentTime, ord.calcPrice(), tip
+                    );
+                    db.executeUpdate(insertQuery);
+
                     payStage.close();
                 }
             });
