@@ -1,4 +1,6 @@
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -19,7 +21,7 @@ class drinkPopup {
     drinkPopup(String drinkType, Map<String, Map<String, List<Double>>> drinksMap, Map<String, Double> toppingsMap, Order ord) {
 
         Set<String> drinks = drinksMap.get(drinkType).keySet();
-        Set<String> toppings = toppingsMap.keySet();
+        String[] toppings = toppingsMap.keySet().toArray(String[]::new);
 
 
         Stage popupStage = new Stage();
@@ -84,22 +86,27 @@ class drinkPopup {
                             "Oreo", "Pudding")
         );
 
-        for(int i = 0; i < toppings.size()/2; ++i)
-        {
-            CheckBox toppingCheckbox = new CheckBox(toppings[i]);
-            toppingsGP.add(toppingCheckbox, 0, i);
-        }
-        for(int i = 0; i < Math.ceil(toppings.size()/2); ++i)
-        {
-            CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i + toppings.size()/2));
-            toppingsGP.add(toppingCheckbox, 1, i);
-        }
+        // for(int i = 0; i < toppings.size()/2; ++i)
+        // {
+        //     CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i));
+        //     toppingsGP.add(toppingCheckbox, 0, i);
+        // }
+        // for(int i = 0; i < Math.ceil(toppings.size()/2); ++i)
+        // {
+        //     CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i + toppings.size()/2));
+        //     toppingsGP.add(toppingCheckbox, 1, i);
+        // }
         int index = 0;
         for(String item: toppings){
-            if(index < toppings.size()/2){
-
+            if(index < toppings.length/2){
+                CheckBox toppingCheckbox = new CheckBox(item);
+                toppingsGP.add(toppingCheckbox, 0, index);
             }
-            else
+            else {
+                CheckBox toppingCheckbox = new CheckBox(item);
+                toppingsGP.add(toppingCheckbox, 1, index - toppings.length/2);
+            }
+            index++;
         }
         toppingsSection.getChildren().add(toppingsGP);
 
@@ -175,6 +182,15 @@ class drinkPopup {
             }
             else{
                 price = drinksMap.get(drinkType).get(name).get(1);
+            }
+
+            ObservableList<Node> cblist = toppingsGP.getChildren();
+
+
+            for(int i = 0; i < toppings.length; i++){
+                if(((CheckBox)cblist.get(i)).isSelected()){
+                    price += toppingsMap.get(toppings[i]);
+                }
             }
 
             d = new Drink(name, drinkType, size, temp, ice_level, sugar_level, price);
