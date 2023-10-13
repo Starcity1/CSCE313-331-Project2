@@ -27,6 +27,7 @@ public class Order{
         double sum = 0.0;
         for(int i = 0; i < drinks.size(); i++){
             sum += drinks.get(i).calcPrice();
+            //System.out.println("Currnet" + drinks.get(i).calcPrice());
         }
         return sum;
     }

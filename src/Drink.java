@@ -13,7 +13,7 @@ public class Drink {
     //private static int drinkIDCounter = 1;
 
 
-    public Drink(String name, String category, String size, String temp, String ice_level, String sugar_level, String price){
+    public Drink(String name, String category, String size, String temp, String ice_level, String sugar_level, double price){
         this.drinkID = 1;
         this.name = name;
         this.category = category;
@@ -21,7 +21,7 @@ public class Drink {
         this.temp = temp;
         this.ice_level = ice_level;
         this.sugar_level = Integer.parseInt(sugar_level.substring(0,sugar_level.length() - 1));
-        this.price = 0.0;
+        this.price = price;
         //this.toppings = toppings;
         //drinkIDCounter++;
 
@@ -66,7 +66,7 @@ public class Drink {
     double calcPrice(){
         // We might need a database for current prices
         // price of drink and size + price of toppings
-        return 0.0;
+        return price;
     }
 
     public String toString(){
