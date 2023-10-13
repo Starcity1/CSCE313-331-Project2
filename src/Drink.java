@@ -10,11 +10,11 @@ public class Drink {
     double price;
     //String[] toppings;
 
-    //private static int drinkIDCounter = 1;
+    public static int drinkIDCounter = 1;
 
 
     public Drink(String name, String category, String size, String temp, String ice_level, String sugar_level, double price){
-        this.drinkID = 1;
+        this.drinkID = drinkIDCounter;
         this.name = name;
         this.category = category;
         this.size = size;
@@ -23,7 +23,7 @@ public class Drink {
         this.sugar_level = Integer.parseInt(sugar_level.substring(0,sugar_level.length() - 1));
         this.price = price;
         //this.toppings = toppings;
-        //drinkIDCounter++;
+        drinkIDCounter++;
 
     }
 

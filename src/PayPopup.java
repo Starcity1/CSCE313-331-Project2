@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import javafx.event.EventHandler;
 
 import javafx.geometry.Insets;
@@ -10,6 +12,16 @@ import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 
 public class PayPopup extends GUI {
+
+    dbConnectionHandler db;
+    Order ord;
+
+    PayPopup(dbConnectionHandler handler, Order o){
+        db = handler;
+        System.out.print("FIRST OR");
+        ord = o;
+    }
+
     public EventHandler<MouseEvent> payHandle = new EventHandler<>() {
         @Override
         public void handle(MouseEvent mouseEvent)
@@ -63,6 +75,12 @@ public class PayPopup extends GUI {
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent1) {
+                    ArrayList<Drink> drinks = ord.getDrinks();
+                    for(int i = 0; i < drinks.size(); i++) {
+                        System.out.print("SECOND OR");
+                        db.executeUpdate(String.format("INSERT INTO drink (drinkid, orderid, name, category, size, temp, ice_level, sugar_level, price) VALUES ('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%.2f');",
+                        drinks.get(i).getDrinkID(), ord.getOrderID(), drinks.get(i).getName(), drinks.get(i).getCategory(), drinks.get(i).getSize(), drinks.get(i).getTemp(), drinks.get(i).getIce_level(), drinks.get(i).getSugar_level(), drinks.get(i).getPrice()));
+                    }
                     payStage.close();
                 }
             });

@@ -1,20 +1,24 @@
 import java.util.ArrayList;
 
 public class Order{
-    //private static int orderIDCounter = 1;
+    public static int orderIDCounter = 1;
 
     int orderID;
     ArrayList<Drink> drinks;
 
     public Order(){
-        orderID = 4;
+        orderID = orderIDCounter;
         drinks = new ArrayList<Drink>();
 
-        //orderIDCounter++;
+        orderIDCounter++;
     }
 
     ArrayList<Drink> getDrinks(){
         return drinks;
+    }
+
+    int getOrderID(){
+        return orderID;
     }
 
     void addDrink(Drink d){
