@@ -83,49 +83,69 @@ public class GUI extends Application{
         drinkMap = mapper.readValue(new File("data\\drinks.json"), Map.class);
 
 
-        this.primaryStage = primaryStage;
+this.primaryStage = primaryStage;
         primaryStage.setTitle("315 Project");
-        primaryStage.setMinWidth(300);
-        primaryStage.setMinHeight(200);
+        primaryStage.setMinWidth(1000);
+        primaryStage.setMinHeight(650);
 
         classic = new Button();
         classic.setText("Classic");
+        classic.setStyle("-fx-font:18px Tahoma;");
+        classic.setPadding(new Insets(30, 30, 30, 30));
         classic.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_tea = new Button();
         milk_tea.setText("Milk Tea");
+        milk_tea.setStyle("-fx-font:18px Tahoma;");
+        milk_tea.setPadding(new Insets(30, 30, 30, 30));
         milk_tea.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         punch = new Button();
         punch.setText("Punch");
+        punch.setStyle("-fx-font:18px Tahoma;");
+        punch.setPadding(new Insets(30, 30, 30, 30));
         punch.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_cap = new Button();
         milk_cap.setText("Milk Cap");
+        milk_cap.setStyle("-fx-font:18px Tahoma;");
+        milk_cap.setPadding(new Insets(30, 30, 30, 30));
         milk_cap.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         yogurt = new Button();
         yogurt.setText("Yogurt");
+        yogurt.setStyle("-fx-font:18px Tahoma;");
+        yogurt.setPadding(new Insets(30, 30, 30, 30));
         yogurt.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         slush = new Button();
         slush.setText("Slush");
+        slush.setStyle("-fx-font:18px Tahoma;");
+        slush.setPadding(new Insets(30, 30, 30, 30));
         slush.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_strike = new Button();
         milk_strike.setText("Milk Strike");
+        milk_strike.setStyle("-fx-font:18px Tahoma;");
+        milk_strike.setPadding(new Insets(30, 30, 30, 30));
         milk_strike.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         espresso = new Button();
         espresso.setText("Espresso");
+        espresso.setStyle("-fx-font:18px Tahoma;");
+        espresso.setPadding(new Insets(30, 30, 30, 30));
         espresso.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         seasonal = new Button();
         seasonal.setText("Seasonal");
+        seasonal.setStyle("-fx-font:18px Tahoma;");
+        seasonal.setPadding(new Insets(30, 30, 30, 30));
         seasonal.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         limited = new Button();
         limited.setText("What's New");
+        limited.setStyle("-fx-font:18px Tahoma;");
+        limited.setPadding(new Insets(30, 30, 30, 30));
         limited.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         // To Manager's GUI!!!
