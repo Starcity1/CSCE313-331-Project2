@@ -63,6 +63,7 @@ public class GUI extends Application{
 
     ObjectMapper mapper;
     Map<String, Map<String, List<Double>>> drinkMap;
+    Map<String,Double> toppingsMap;
 
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
@@ -71,7 +72,7 @@ public class GUI extends Application{
             
             // Array later becomes all other products in popups.
 
-            drinkPopup new_popup = new drinkPopup(drinkType, drinkMap ,o);
+            drinkPopup new_popup = new drinkPopup(drinkType, drinkMap, toppingsMap ,o);
 
         }
     };
@@ -81,6 +82,7 @@ public class GUI extends Application{
 
         mapper = new ObjectMapper();
         drinkMap = mapper.readValue(new File("data\\drinks.json"), Map.class);
+        toppingsMap = mapper.readValue(new File("data\\toppings.json"), Map.class);
 
 
         this.primaryStage = primaryStage;
