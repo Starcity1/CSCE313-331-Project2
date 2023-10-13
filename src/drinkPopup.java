@@ -1,4 +1,6 @@
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -12,11 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import java.lang.Math;
+
 class drinkPopup {
     Drink d;
-    drinkPopup(String drinkType, Map<String, Map<String, List<Double>>> drinksMap, Order ord) {
+    drinkPopup(String drinkType, Map<String, Map<String, List<Double>>> drinksMap, Map<String, Double> toppingsMap, Order ord) {
 
         Set<String> drinks = drinksMap.get(drinkType).keySet();
+        String[] toppings = toppingsMap.keySet().toArray(String[]::new);
 
 
         Stage popupStage = new Stage();
@@ -80,15 +85,28 @@ class drinkPopup {
                             "Grape Popping Bubble", "Mango Popping Bubble", "Coffee Popping Bubble", "Red Bean",
                             "Oreo", "Pudding")
         );
-        for(int i = 0; i < 7; ++i)
-        {
-            CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i));
-            toppingsGP.add(toppingCheckbox, 0, i);
-        }
-        for(int i = 0; i < 7; ++i)
-        {
-            CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i + 7));
-            toppingsGP.add(toppingCheckbox, 1, i);
+
+        // for(int i = 0; i < toppings.size()/2; ++i)
+        // {
+        //     CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i));
+        //     toppingsGP.add(toppingCheckbox, 0, i);
+        // }
+        // for(int i = 0; i < Math.ceil(toppings.size()/2); ++i)
+        // {
+        //     CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i + toppings.size()/2));
+        //     toppingsGP.add(toppingCheckbox, 1, i);
+        // }
+        int index = 0;
+        for(String item: toppings){
+            if(index < toppings.length/2){
+                CheckBox toppingCheckbox = new CheckBox(item);
+                toppingsGP.add(toppingCheckbox, 0, index);
+            }
+            else {
+                CheckBox toppingCheckbox = new CheckBox(item);
+                toppingsGP.add(toppingCheckbox, 1, index - toppings.length/2);
+            }
+            index++;
         }
         toppingsSection.getChildren().add(toppingsGP);
 
@@ -151,17 +169,6 @@ class drinkPopup {
         });
 
         doneButton.setOnAction(event -> {
-            // d = new Drink(((RadioButton)itemToggleGroup.getSelectedToggle()).getText(),
-            // "WIP",
-            // ((RadioButton)sizeToggleGroup.getSelectedToggle()).getText(),
-            // ((RadioButton)temperatureToggleGroup.getSelectedToggle()).getText(),
-            // ((RadioButton)iceLevelToggleGroup.getSelectedToggle()).getText(),
-            // ((RadioButton)sugarToggleGroup.getSelectedToggle()).getText(),
-            // "0.0",
-            // new String[3]);
-
-            //d = new Drink("test", "test", "test","test","test","100%","0.0");
-
             String name = ((RadioButton)itemToggleGroup.getSelectedToggle()).getText();
             String size = ((RadioButton)sizeToggleGroup.getSelectedToggle()).getText();
             String temp = ((RadioButton)temperatureToggleGroup.getSelectedToggle()).getText();
@@ -177,6 +184,15 @@ class drinkPopup {
                 price = drinksMap.get(drinkType).get(name).get(1);
             }
 
+            ObservableList<Node> cblist = toppingsGP.getChildren();
+
+
+            for(int i = 0; i < toppings.length; i++){
+                if(((CheckBox)cblist.get(i)).isSelected()){
+                    price += toppingsMap.get(toppings[i]);
+                }
+            }
+
             d = new Drink(name, drinkType, size, temp, ice_level, sugar_level, price);
             System.out.print(((RadioButton)sugarToggleGroup.getSelectedToggle()).getText());
             ord.addDrink(d);
@@ -185,75 +201,3 @@ class drinkPopup {
     }
 
 };
-
-// switch(drinkType)
-        // {
-        //     case "Classic":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Longan Jujube Tea", "Kung Fu Black Tea", "Kung Fu Green Tea",
-        //                             "Kung Fu Oolong Tea", "Kung Fu Honey Tea")
-        //         );
-        //         break;
-        //     case "Milk Tea":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Kung Fu Milk/Milk Green Tea", "Rosehip Milk Tea", "Coffee Milk Tea",
-        //                                 "Taro Milk/Milk Green Tea", "Honey Milk/Milk Green Tea", "Thai Milk Tea",
-        //                                 "Winter Melon Milk Green Tea", "Oolong Milk Tea/ Honey Oolong Milk Tea", "Coconut Milk Tea",
-        //                                 "Almond Milk Tea")
-        //         );
-        //         break;
-        //     case "Punch":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Grapefruit Green Tea", "Rosehip Lemonade", "Lychee Punch",
-        //                                 "Lychee Black Tea", "Sunshine Pineapple Tea", "Strawberry Lemonade",
-        //                                 "Honey Lemonade", "Peach Oolong Tea", "Mango Green Tea",
-        //                                 "Passionfruit Green Tea", "Strawberry Lemon Green Tea", "Orange Green Tea")
-        //         );
-        //         break;
-        //     case "Milk Cap":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Honey Tea Cap (Black/Green/Oolong)", "Matcha Milk Cap", "Cocoa Cream Wow Milk Cap",
-        //                                 "Sunshine Pineapple Tea Cap", "Winter Melon Tea Cap")
-        //         );
-        //         break;
-        //     case "Yogurt":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Yogurt Orange", "Yogurt Grapefruit", "Yogurt Green Tea")
-        //         );
-        //         break;
-        //     case "Slush":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Mango/Mango Snow Slush", "Taro Slush", "Matcha Red Bean Slush")
-        //         );
-        //         break;
-        //     case "Milk Strike":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Herbal Jelly Wow", "Matcha Milk", "Red Bean Wow",
-        //                                 "Sesame Matcha", "Chair Milk", "Cocoa Cream Wow",
-        //                                 "Ginger Milk", "Oreo Wow")
-        //         );
-        //         break;
-        //     case "Espresso":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Signature Coffee", "Caramel Macchiato", "Mocha",
-        //                                 "Latte", "Cappuccino")
-        //         );
-        //         break;
-        //     case "Seasonal":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Brown Sugar Ginger", "Pumpkin Oolong Milk Tea", "Purple Yam Latte",
-        //                                 "Rosehip Pineapple Punch", "Yogurt Peach Lemonade")
-        //         );
-        //         break;
-        //     case "What's New":
-        //         items = new ArrayList<>(
-        //                 Arrays.asList("Mango Creamsicle", "Caramel milk Tea", "Lemon-Almond Pie",
-        //                             "Sesame oolong Milk Tea", "Sesame Slush", "White Grape Punch",
-        //                             "White Grape Slush", "Hershey's Smores Slush/Coffee Slush", "Hershey's Cocoa",
-        //                             "Wow Milk Cap (Green/Black/Oolong)", "Coffee Wow Milk Cap")
-        //         );
-        //         break;
-        //     default:
-        //         items = new ArrayList<>();
-        //         break;
-        // }

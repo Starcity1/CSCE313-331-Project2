@@ -18,7 +18,7 @@ public class Order{
     }
 
     void addDrink(Drink d){
-        System.out.println("HELP");
+        //System.out.println("HELP");
         drinks.add(d);
         System.out.print(d);
     }

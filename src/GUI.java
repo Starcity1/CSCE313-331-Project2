@@ -63,6 +63,7 @@ public class GUI extends Application{
 
     ObjectMapper mapper;
     Map<String, Map<String, List<Double>>> drinkMap;
+    Map<String,Double> toppingsMap;
 
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
@@ -71,7 +72,7 @@ public class GUI extends Application{
             
             // Array later becomes all other products in popups.
 
-            drinkPopup new_popup = new drinkPopup(drinkType, drinkMap ,o);
+            drinkPopup new_popup = new drinkPopup(drinkType, drinkMap, toppingsMap ,o);
 
         }
     };
@@ -81,6 +82,7 @@ public class GUI extends Application{
 
         mapper = new ObjectMapper();
         drinkMap = mapper.readValue(new File("data\\drinks.json"), Map.class);
+        toppingsMap = mapper.readValue(new File("data\\toppings.json"), Map.class);
 
 
 this.primaryStage = primaryStage;
@@ -136,12 +138,6 @@ this.primaryStage = primaryStage;
         espresso.setPadding(new Insets(30, 30, 30, 30));
         espresso.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
-        seasonal = new Button();
-        seasonal.setText("Seasonal");
-        seasonal.setStyle("-fx-font:18px Tahoma;");
-        seasonal.setPadding(new Insets(30, 30, 30, 30));
-        seasonal.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
-
         limited = new Button();
         limited.setText("What's New");
         limited.setStyle("-fx-font:18px Tahoma;");
@@ -162,7 +158,7 @@ this.primaryStage = primaryStage;
         GridPane menu = new GridPane();
         HBox.setHgrow(menu, Priority.SOMETIMES);
         menu.setAlignment(Pos.CENTER);
-        menu.setPadding(new Insets(25, 25, 25, 25));
+        menu.setPadding(new Insets(50, 50, 50, 50));
 
         GridPane.setConstraints(managerGUI, 1, 0);
         GridPane.setConstraints(classic, 0, 1);
@@ -173,8 +169,7 @@ this.primaryStage = primaryStage;
         GridPane.setConstraints(slush, 2, 2);
         GridPane.setConstraints(milk_strike, 0, 3);
         GridPane.setConstraints(espresso, 1, 3);
-        GridPane.setConstraints(seasonal, 2, 3);
-        GridPane.setConstraints(limited, 1, 4);
+        GridPane.setConstraints(limited, 2, 3);
 
         for (int i = 0; i < menu_cols; i++) {
             ColumnConstraints column = new ColumnConstraints();
@@ -188,8 +183,7 @@ this.primaryStage = primaryStage;
             menu.getRowConstraints().add(row);
         }
 
-
-        menu.getChildren().addAll(managerGUI, classic, milk_tea, punch, milk_cap, yogurt, slush, milk_strike, espresso, seasonal, limited);
+        menu.getChildren().addAll(managerGUI, classic, milk_tea, punch, milk_cap, yogurt, slush, milk_strike, espresso, limited);
 
         VBox orderArea = new VBox();
         HBox.setHgrow(orderArea, Priority.SOMETIMES);
