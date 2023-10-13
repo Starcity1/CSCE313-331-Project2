@@ -27,55 +27,11 @@ import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-
-final class dbSetup  {
-    public static final String user = "csce331_903_davidrodriguez24";
-    public static final String pswd = "cEl240403";
-}
-
-class dbConnectionHandler {
-     public final ResultSet requestData(String query) {
-         Connection conn = null;
-         String dbConnectionString = "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_03r_db";
-         try {
-             conn = DriverManager.getConnection(dbConnectionString, dbSetup.user, dbSetup.pswd);
-         } catch (Exception e) {
-             e.printStackTrace();
-             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-             System.exit(1);
-         }
-         try {
-             Statement stmt = conn.createStatement();
-             ResultSet res = stmt.executeQuery(query);
-             conn.close();
-             return res;
-         } catch (Exception e) {
-         }
-         return null;
-     }
-
-    public int executeUpdate(String updateQuery) {
-        Connection conn = null;
-        int rowsAffected = 0;
-        String dbConnectionString = "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_03r_db";
-        try {
-            conn = DriverManager.getConnection(dbConnectionString, dbSetup.user, dbSetup.pswd);
-            Statement stmt = conn.createStatement();
-            rowsAffected = stmt.executeUpdate(updateQuery);
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-        return rowsAffected;
-    }
-}
-
 public class ManagerGUI {
     Stage primaryStage;
     private YearMonth currentYearMonth;
     private ObservableList<ObservableList> data;
-    ManagerGUI()
+    ManagerGUI(dbConnectionHandler handler)
     {
         currentYearMonth = YearMonth.now();
         data = FXCollections.observableArrayList();
@@ -86,7 +42,6 @@ public class ManagerGUI {
         primaryStage.setMinWidth(800);
         GridPane primaryGP = new GridPane();
 
-        dbConnectionHandler handler = new dbConnectionHandler();
         ResultSet queryRes = handler.requestData("SELECT * FROM order_log WHERE date::DATE = \'2022-01-11\';");
 
         // Adding results to this array. Array will be then used to generate table and line graph.

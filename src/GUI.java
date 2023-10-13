@@ -59,7 +59,7 @@ public class GUI extends Application{
 
     protected static float totalCost;
 
-    Order o = new Order();
+    Order o;
 
     ObjectMapper mapper;
     Map<String, Map<String, List<Double>>> drinkMap;
@@ -84,11 +84,20 @@ public class GUI extends Application{
         drinkMap = mapper.readValue(new File("data\\drinks.json"), Map.class);
         toppingsMap = mapper.readValue(new File("data\\toppings.json"), Map.class);
 
+        dbConnectionHandler handler = new dbConnectionHandler();
 
-this.primaryStage = primaryStage;
+        Order.orderIDCounter = handler.requestInt("select MAX(orderid) from order_log;") + 1;
+
+        Drink.drinkIDCounter = handler.requestInt("select MAX(drinkid) from drink;") + 1;
+
+        o = new Order();    
+
+
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("315 Project");
         primaryStage.setMinWidth(1000);
         primaryStage.setMinHeight(650);
+
 
         classic = new Button();
         classic.setText("Classic");
@@ -139,7 +148,7 @@ this.primaryStage = primaryStage;
         espresso.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         limited = new Button();
-        limited.setText("What's New");
+        limited.setText("New Drinks");
         limited.setStyle("-fx-font:18px Tahoma;");
         limited.setPadding(new Insets(30, 30, 30, 30));
         limited.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
@@ -149,7 +158,7 @@ this.primaryStage = primaryStage;
         managerGUI.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                ManagerGUI managerGUI = new ManagerGUI();
+                ManagerGUI managerGUI = new ManagerGUI(handler);
             }
         });
 
@@ -243,7 +252,8 @@ this.primaryStage = primaryStage;
         orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
 
         // Go to pay page.
-        payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new PayPopup().payHandle);
+        PayPopup pp = new PayPopup(handler, o);
+        payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, pp.payHandle);
 
         //orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);
 
