@@ -53,6 +53,22 @@ class dbConnectionHandler {
          }
          return null;
      }
+
+    public int executeUpdate(String updateQuery) {
+        Connection conn = null;
+        int rowsAffected = 0;
+        String dbConnectionString = "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_03r_db";
+        try {
+            conn = DriverManager.getConnection(dbConnectionString, dbSetup.user, dbSetup.pswd);
+            Statement stmt = conn.createStatement();
+            rowsAffected = stmt.executeUpdate(updateQuery);
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
+        return rowsAffected;
+    }
 }
 
 public class ManagerGUI {
@@ -163,6 +179,8 @@ public class ManagerGUI {
         mainSection.getChildren().add(tableSection);
 
         primaryGP.add(mainSection, 0, 1);
+        InventoryRequestSection inventoryRequestSection = new InventoryRequestSection(handler);
+        primaryGP.add(inventoryRequestSection, 1, 1);
 
         Scene primaryScene = new Scene(primaryGP);
         primaryStage.setScene(primaryScene);
@@ -222,5 +240,65 @@ public class ManagerGUI {
 
         // Repopulate the calendar for the new month
         populateCalendar(gridPane);
+    }
+}
+
+class InventoryRequestSection extends VBox {
+    private TextField itemNameField;
+    private TextField quantityField;
+    private Button submitButton;
+    private dbConnectionHandler handler;
+
+    public InventoryRequestSection(dbConnectionHandler handler) {
+        this.handler = handler;
+
+        setSpacing(10);
+
+        Label titleLabel = new Label("Add Inventory Request");
+        itemNameField = new TextField();
+        itemNameField.setPromptText("Item Name");
+        quantityField = new TextField();
+        quantityField.setPromptText("Quantity");
+        
+        submitButton = new Button("Submit Request");
+        submitButton.setOnAction(e -> submitRequest());
+
+        getChildren().addAll(titleLabel, itemNameField, quantityField, submitButton);
+    }
+
+    private void submitRequest() {
+        String itemName = itemNameField.getText().trim();
+        int quantity;
+        try {
+            quantity = Integer.parseInt(quantityField.getText().trim());
+        } catch (NumberFormatException e) {
+            showAndThrowError("Please input a valid number for quantity.");
+            return;
+        }
+
+        // Updated insertQuery
+        String insertQuery = String.format(
+            "INSERT INTO inventory_requests (item_name, quantity) VALUES ('%s', %d);",
+            itemName, quantity
+        );
+
+        handler.executeUpdate(insertQuery);
+        showInfo("Inventory request added successfully!");
+    }
+
+    private void showAndThrowError(String message) {
+        Alert failedInput = new Alert(Alert.AlertType.ERROR);
+        failedInput.setTitle("Input Error");
+        failedInput.setHeaderText("Error!");
+        failedInput.setContentText(message);
+        failedInput.showAndWait();
+    }
+
+    private void showInfo(String message) {
+        Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+        infoAlert.setTitle("Info");
+        infoAlert.setHeaderText("Information");
+        infoAlert.setContentText(message);
+        infoAlert.showAndWait();
     }
 }
