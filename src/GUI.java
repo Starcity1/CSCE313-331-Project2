@@ -1,3 +1,5 @@
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 
 import javafx.event.EventHandler;
@@ -24,6 +26,18 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
+import java.io.File;
+import java.io.IOException;
+
 
 public class GUI extends Application{
     protected Stage primaryStage;
@@ -45,134 +59,95 @@ public class GUI extends Application{
 
     protected static float totalCost;
 
+    Order o = new Order();
+
+    ObjectMapper mapper;
+    Map<String, Map<String, List<Double>>> drinkMap;
+    Map<String,Double> toppingsMap;
+
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
             String drinkType = ((Button) mouseEvent.getSource()).getText();
             
             // Array later becomes all other products in popups.
-            ArrayList<String> items;
-            switch(drinkType)
-            {
-                case "Classic":
-                    items = new ArrayList<>(
-                            Arrays.asList("Longan Jujube Tea", "Kung Fu Black Tea", "Kung Fu Green Tea",
-                                        "Kung Fu Oolong Tea", "Kung Fu Honey Tea")
-                    );
-                    break;
-                case "Milk Tea":
-                    items = new ArrayList<>(
-                            Arrays.asList("Kung Fu Milk/Milk Green Tea", "Rosehip Milk Tea", "Coffee Milk Tea",
-                                          "Taro Milk/Milk Green Tea", "Honey Milk/Milk Green Tea", "Thai Milk Tea",
-                                          "Winter Melon Milk Green Tea", "Oolong Milk Tea/ Honey Oolong Milk Tea", "Coconut Milk Tea",
-                                          "Almond Milk Tea")
-                    );
-                    break;
-                case "Punch":
-                    items = new ArrayList<>(
-                            Arrays.asList("Grapefruit Green Tea", "Rosehip Lemonade", "Lychee Punch",
-                                          "Lychee Black Tea", "Sunshine Pineapple Tea", "Strawberry Lemonade",
-                                          "Honey Lemonade", "Peach Oolong Tea", "Mango Green Tea",
-                                          "Passionfruit Green Tea", "Strawberry Lemon Green Tea", "Orange Green Tea")
-                    );
-                    break;
-                case "Milk Cap":
-                    items = new ArrayList<>(
-                            Arrays.asList("Honey Tea Cap (Black/Green/Oolong)", "Matcha Milk Cap", "Cocoa Cream Wow Milk Cap",
-                                          "Sunshine Pineapple Tea Cap", "Winter Melon Tea Cap")
-                    );
-                    break;
-                case "Yogurt":
-                    items = new ArrayList<>(
-                            Arrays.asList("Yogurt Orange", "Yogurt Grapefruit", "Yogurt Green Tea")
-                    );
-                    break;
-                case "Slush":
-                    items = new ArrayList<>(
-                            Arrays.asList("Mango/Mango Snow Slush", "Taro Slush", "Matcha Red Bean Slush")
-                    );
-                    break;
-                case "Milk Strike":
-                    items = new ArrayList<>(
-                            Arrays.asList("Herbal Jelly Wow", "Matcha Milk", "Red Bean Wow",
-                                          "Sesame Matcha", "Chair Milk", "Cocoa Cream Wow",
-                                          "Ginger Milk", "Oreo Wow")
-                    );
-                    break;
-                case "Espresso":
-                    items = new ArrayList<>(
-                            Arrays.asList("Signature Coffee", "Caramel Macchiato", "Mocha",
-                                          "Latte", "Cappuccino")
-                    );
-                    break;
-                case "Seasonal":
-                    items = new ArrayList<>(
-                            Arrays.asList("Brown Sugar Ginger", "Pumpkin Oolong Milk Tea", "Purple Yam Latte",
-                                          "Rosehip Pineapple Punch", "Yogurt Peach Lemonade")
-                    );
-                    break;
-                case "What's New":
-                    items = new ArrayList<>(
-                          Arrays.asList("Mango Creamsicle", "Caramel milk Tea", "Lemon-Almond Pie",
-                                        "Sesame oolong Milk Tea", "Sesame Slush", "White Grape Punch",
-                                        "White Grape Slush", "Hershey's Smores Slush/Coffee Slush", "Hershey's Cocoa",
-                                        "Wow Milk Cap (Green/Black/Oolong)", "Coffee Wow Milk Cap")
-                    );
-                    break;
-                default:
-                    items = new ArrayList<>();
-                    break;
-            }
 
-            drinkPopup new_popup = new drinkPopup(items);
+            drinkPopup new_popup = new drinkPopup(drinkType, drinkMap, toppingsMap ,o);
+
         }
     };
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.primaryStage = primaryStage;
+
+        mapper = new ObjectMapper();
+        drinkMap = mapper.readValue(new File("data\\drinks.json"), Map.class);
+        toppingsMap = mapper.readValue(new File("data\\toppings.json"), Map.class);
+
+
+this.primaryStage = primaryStage;
         primaryStage.setTitle("315 Project");
-        primaryStage.setMinWidth(300);
-        primaryStage.setMinHeight(200);
+        primaryStage.setMinWidth(1000);
+        primaryStage.setMinHeight(650);
 
         classic = new Button();
         classic.setText("Classic");
+        classic.setStyle("-fx-font:18px Tahoma;");
+        classic.setPadding(new Insets(30, 30, 30, 30));
         classic.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_tea = new Button();
         milk_tea.setText("Milk Tea");
+        milk_tea.setStyle("-fx-font:18px Tahoma;");
+        milk_tea.setPadding(new Insets(30, 30, 30, 30));
         milk_tea.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         punch = new Button();
         punch.setText("Punch");
+        punch.setStyle("-fx-font:18px Tahoma;");
+        punch.setPadding(new Insets(30, 30, 30, 30));
         punch.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_cap = new Button();
         milk_cap.setText("Milk Cap");
+        milk_cap.setStyle("-fx-font:18px Tahoma;");
+        milk_cap.setPadding(new Insets(30, 30, 30, 30));
         milk_cap.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         yogurt = new Button();
         yogurt.setText("Yogurt");
+        yogurt.setStyle("-fx-font:18px Tahoma;");
+        yogurt.setPadding(new Insets(30, 30, 30, 30));
         yogurt.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         slush = new Button();
         slush.setText("Slush");
+        slush.setStyle("-fx-font:18px Tahoma;");
+        slush.setPadding(new Insets(30, 30, 30, 30));
         slush.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         milk_strike = new Button();
         milk_strike.setText("Milk Strike");
+        milk_strike.setStyle("-fx-font:18px Tahoma;");
+        milk_strike.setPadding(new Insets(30, 30, 30, 30));
         milk_strike.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         espresso = new Button();
         espresso.setText("Espresso");
+        espresso.setStyle("-fx-font:18px Tahoma;");
+        espresso.setPadding(new Insets(30, 30, 30, 30));
         espresso.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         seasonal = new Button();
         seasonal.setText("Seasonal");
+        seasonal.setStyle("-fx-font:18px Tahoma;");
+        seasonal.setPadding(new Insets(30, 30, 30, 30));
         seasonal.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         limited = new Button();
         limited.setText("What's New");
+        limited.setStyle("-fx-font:18px Tahoma;");
+        limited.setPadding(new Insets(30, 30, 30, 30));
         limited.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         // To Manager's GUI!!!
@@ -189,7 +164,7 @@ public class GUI extends Application{
         GridPane menu = new GridPane();
         HBox.setHgrow(menu, Priority.SOMETIMES);
         menu.setAlignment(Pos.CENTER);
-        menu.setPadding(new Insets(25, 25, 25, 25));
+        menu.setPadding(new Insets(50, 50, 50, 50));
 
         GridPane.setConstraints(managerGUI, 1, 0);
         GridPane.setConstraints(classic, 0, 1);
@@ -238,23 +213,47 @@ public class GUI extends Application{
 
         orderGridPane.getChildren().addAll(itemLabel, quantityLabel, totalItemLabel);
 
+        Label totalLabel = new Label(String.format("Total:\t%.2f$", 0.0));
+        totalCost = 694.20F;
+        
+        Timeline updateTimeline = new Timeline(
+            new KeyFrame(Duration.seconds(1), event -> {
+            ArrayList<Drink> d = o.getDrinks();
+            if(d != null){
+                for(int i = 0; i < d.size(); i++){
+                    Label drinkLabel = new Label(d.get(i).getName());
+                    Label drinkQuantityLabel = new Label("1"); // Replace this with the actual quantity
+                    Label priceLabel = new Label(Double.toString(d.get(i).getPrice()));
+            
+                    // Adjust the row index to start from 1, not -1
+                    GridPane.setConstraints(drinkLabel, 0, i + 1);
+                    GridPane.setConstraints(drinkQuantityLabel, 1, i + 1);
+                    GridPane.setConstraints(priceLabel, 2, i + 1);
+                    orderGridPane.getChildren().addAll(drinkLabel, drinkQuantityLabel, priceLabel);
+                }
+                totalCost = (float)o.calcPrice();
+                totalLabel.setText(String.format("Total:\t%.2f$", totalCost));
+            }
+            })
+        );
+
         for (int i = 0; i < order_cols; i++) {
             ColumnConstraints column = new ColumnConstraints();
             column.setPercentWidth(100/order_cols);
             orderGridPane.getColumnConstraints().add(column);
         }
 
-        totalCost = 694.20F;
         HBox payArea = new HBox();
         payArea.setAlignment(Pos.CENTER_RIGHT);
         payArea.setSpacing(25);
-        Label totalLabel = new Label(String.format("Total:\t%.2f$", totalCost));
         Button payButton = new Button("Pay");
         payArea.getChildren().addAll(totalLabel, payButton);
         orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
 
         // Go to pay page.
         payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new PayPopup().payHandle);
+
+        //orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);
 
         GridPane.setConstraints(menu, 0, 0);
         GridPane.setConstraints(orderArea, 1, 0);
@@ -283,5 +282,8 @@ public class GUI extends Application{
             menu.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
             layout.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         }
+
+        updateTimeline.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
+        updateTimeline.play();
     }
 }

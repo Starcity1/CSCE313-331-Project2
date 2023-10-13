@@ -1,4 +1,6 @@
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -8,10 +10,20 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import java.lang.Math;
 
 class drinkPopup {
-    drinkPopup(ArrayList<String> items) {
+    Drink d;
+    drinkPopup(String drinkType, Map<String, Map<String, List<Double>>> drinksMap, Map<String, Double> toppingsMap, Order ord) {
+
+        Set<String> drinks = drinksMap.get(drinkType).keySet();
+        String[] toppings = toppingsMap.keySet().toArray(String[]::new);
+
+
         Stage popupStage = new Stage();
 
         // Creating right side of popup.
@@ -22,7 +34,7 @@ class drinkPopup {
         VBox drinkList = new VBox();
         drinkList.setSpacing(25);
         ToggleGroup itemToggleGroup = new ToggleGroup();
-        for(String item : items)
+        for(String item : drinks)
         {
             RadioButton itemButton = new RadioButton(item);
             itemButton.setToggleGroup(itemToggleGroup);
@@ -32,6 +44,9 @@ class drinkPopup {
 
         Button doneButton = new Button("Done");
         popupGP.add(doneButton, 0, 1);
+
+        Button closeButton = new Button("Close");
+        popupGP.add(closeButton, 1, 1);
 
         // Creating left side of popup
         VBox leftSection = new VBox();
@@ -70,15 +85,28 @@ class drinkPopup {
                             "Grape Popping Bubble", "Mango Popping Bubble", "Coffee Popping Bubble", "Red Bean",
                             "Oreo", "Pudding")
         );
-        for(int i = 0; i < 7; ++i)
-        {
-            CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i));
-            toppingsGP.add(toppingCheckbox, 0, i);
-        }
-        for(int i = 0; i < 7; ++i)
-        {
-            CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i + 7));
-            toppingsGP.add(toppingCheckbox, 1, i);
+
+        // for(int i = 0; i < toppings.size()/2; ++i)
+        // {
+        //     CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i));
+        //     toppingsGP.add(toppingCheckbox, 0, i);
+        // }
+        // for(int i = 0; i < Math.ceil(toppings.size()/2); ++i)
+        // {
+        //     CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i + toppings.size()/2));
+        //     toppingsGP.add(toppingCheckbox, 1, i);
+        // }
+        int index = 0;
+        for(String item: toppings){
+            if(index < toppings.length/2){
+                CheckBox toppingCheckbox = new CheckBox(item);
+                toppingsGP.add(toppingCheckbox, 0, index);
+            }
+            else {
+                CheckBox toppingCheckbox = new CheckBox(item);
+                toppingsGP.add(toppingCheckbox, 1, index - toppings.length/2);
+            }
+            index++;
         }
         toppingsSection.getChildren().add(toppingsGP);
 
@@ -135,6 +163,41 @@ class drinkPopup {
         popupStage.setScene(popupScene);
 
         popupStage.show();
+
+        closeButton.setOnAction(event -> {
+            popupStage.close();
+        });
+
+        doneButton.setOnAction(event -> {
+            String name = ((RadioButton)itemToggleGroup.getSelectedToggle()).getText();
+            String size = ((RadioButton)sizeToggleGroup.getSelectedToggle()).getText();
+            String temp = ((RadioButton)temperatureToggleGroup.getSelectedToggle()).getText();
+            String ice_level = ((RadioButton)iceLevelToggleGroup.getSelectedToggle()).getText();
+            String sugar_level = ((RadioButton)sugarToggleGroup.getSelectedToggle()).getText();
+
+            double price = 0.0;
+
+            if("M:".equals(size)){
+                price = drinksMap.get(drinkType).get(name).get(0);
+            }
+            else{
+                price = drinksMap.get(drinkType).get(name).get(1);
+            }
+
+            ObservableList<Node> cblist = toppingsGP.getChildren();
+
+
+            for(int i = 0; i < toppings.length; i++){
+                if(((CheckBox)cblist.get(i)).isSelected()){
+                    price += toppingsMap.get(toppings[i]);
+                }
+            }
+
+            d = new Drink(name, drinkType, size, temp, ice_level, sugar_level, price);
+            System.out.print(((RadioButton)sugarToggleGroup.getSelectedToggle()).getText());
+            ord.addDrink(d);
+            popupStage.close();
+        });
     }
 
 };
