@@ -162,7 +162,7 @@ this.primaryStage = primaryStage;
         GridPane menu = new GridPane();
         HBox.setHgrow(menu, Priority.SOMETIMES);
         menu.setAlignment(Pos.CENTER);
-        menu.setPadding(new Insets(25, 25, 25, 25));
+        menu.setPadding(new Insets(50, 50, 50, 50));
 
         GridPane.setConstraints(managerGUI, 1, 0);
         GridPane.setConstraints(classic, 0, 1);
