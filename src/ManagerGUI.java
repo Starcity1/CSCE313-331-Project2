@@ -1,9 +1,11 @@
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
@@ -13,26 +15,24 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
 import javafx.beans.property.SimpleStringProperty;
+
 import java.util.List;
 import javafx.scene.chart.XYChart;
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.time.YearMonth;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class ManagerGUI {
     Stage primaryStage;
     private YearMonth currentYearMonth;
     private ObservableList<ObservableList> data;
-    ManagerGUI(dbConnectionHandler handler)
-    {
+    private TableView table;
+    private LineChart<Number, Number> ll;
+
+    ManagerGUI(dbConnectionHandler handler) {
         currentYearMonth = YearMonth.now();
         data = FXCollections.observableArrayList();
 
@@ -43,9 +43,56 @@ public class ManagerGUI {
         GridPane primaryGP = new GridPane();
 
         ResultSet queryRes = handler.requestData("SELECT * FROM order_log WHERE date::DATE = \'2022-01-11\';");
+        updateData(queryRes);
 
-        // Adding results to this array. Array will be then used to generate table and line graph.
+        // Tab seciton
+        //VBox tabSection = new VBox();
+        //tabSection.setSpacing(10);
+
+
+        // Main section
+        VBox mainSection = new VBox();
+        HBox chartCalendarSection = new HBox();
+        chartCalendarSection.setAlignment(Pos.CENTER);
+        ll = createChart();
+        chartCalendarSection.getChildren().add(ll);
+
+        // Creating calendar.
+        GridPane calendarGridPane = new GridPane();
+        calendarGridPane.setVgap(10);
+        calendarGridPane.setHgap(10);
+        calendarGridPane.setAlignment(Pos.CENTER);
+        Button prevButton = new Button("<<");
+        prevButton.setOnAction(e -> updateManagerGUI(-1, calendarGridPane));
+        Button nextButton = new Button(">>");
+        nextButton.setOnAction(e -> updateManagerGUI(1, calendarGridPane));
+        calendarGridPane.add(prevButton, 0, 0);
+        calendarGridPane.add(new Label(currentYearMonth.toString()), 1, 0);
+        calendarGridPane.add(nextButton, 2, 0);
+        populateCalendar(calendarGridPane);
+        chartCalendarSection.getChildren().add(calendarGridPane);
+        mainSection.getChildren().add(chartCalendarSection);
+
+        // Creating Table
+        VBox tableSection = new VBox();
+        Label tableLabel = new Label("Table from orders");
+        table = createTable(queryRes);
+        tableSection.getChildren().addAll(tableLabel, table);
+        mainSection.getChildren().add(tableSection);
+
+        primaryGP.add(mainSection, 0, 1);
+        InventoryRequestSection inventoryRequestSection = new InventoryRequestSection(handler);
+        primaryGP.add(inventoryRequestSection, 1, 1);
+
+        Scene primaryScene = new Scene(primaryGP);
+        primaryStage.setScene(primaryScene);
+        primaryStage.show();
+
+    }
+
+    private void updateData(ResultSet queryRes) {
         int queryResSize = 0;
+        data.clear();
         try {
             if(queryRes == null) {throw new RuntimeException("Error");}
             queryResSize = queryRes.getMetaData().getColumnCount();
@@ -61,23 +108,14 @@ public class ManagerGUI {
         } catch (Exception e) {
             showAndThrowError("Invalid input was entered to database.");
         }
+    }
 
-        // Tab seciton
-        //VBox tabSection = new VBox();
-        //tabSection.setSpacing(10);
-
-
-        // Main section
-        VBox mainSection = new VBox();
-        HBox chartCalendarSection = new HBox();
-        chartCalendarSection.setAlignment(Pos.CENTER);
-
-        // Creating chart.
+    private LineChart createChart() {
         NumberAxis x = new NumberAxis();
         x.setLabel("Day described");
         NumberAxis y = new NumberAxis();
         y.setLabel("Orders made");
-        LineChart<Number, Number> ll = new LineChart(x,y);
+        ll = new LineChart(x,y);
         ll.setTitle("Orders made.");
         List<String> xData = data.stream().map(row -> row.get(3).toString()).collect(Collectors.toList());
         List<Double> yData = data.stream().map(row -> Double.parseDouble(row.get(4).toString())).collect(Collectors.toList());
@@ -88,30 +126,29 @@ public class ManagerGUI {
         }
         series.setName("Total Cost over 1-day period.");
         ll.getData().add(series);
-        chartCalendarSection.getChildren().add(ll);
 
-        // Creating calendar.
-        GridPane calendarGridPane = new GridPane();
-        calendarGridPane.setVgap(10);
-        calendarGridPane.setHgap(10);
-        calendarGridPane.setAlignment(Pos.CENTER);
-        Button prevButton = new Button("<<");
-        prevButton.setOnAction(e -> updateCalendar(-1, calendarGridPane));
-        Button nextButton = new Button(">>");
-        nextButton.setOnAction(e -> updateCalendar(1, calendarGridPane));
-        calendarGridPane.add(prevButton, 0, 0);
-        calendarGridPane.add(new Label(currentYearMonth.toString()), 1, 0);
-        calendarGridPane.add(nextButton, 2, 0);
-        populateCalendar(calendarGridPane);
-        chartCalendarSection.getChildren().add(calendarGridPane);
-        mainSection.getChildren().add(chartCalendarSection);
+        return ll;
+    }
 
-        // Creating Table
-        VBox tableSection = new VBox();
-        Label tableLabel = new Label("Table from orders");
-        TableView table = new TableView();
+    private void updateChart(LineChart ll) {
+        ll.getData().clear();
+        List<String> xData = data.stream().map(row -> row.get(3).toString()).collect(Collectors.toList());
+        List<Double> yData = data.stream().map(row -> Double.parseDouble(row.get(4).toString())).collect(Collectors.toList());
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        for (int i = 0; i < xData.size(); i++)
+        {
+            series.getData().add(new XYChart.Data<Number, Number>(i, yData.get(i)));
+        }
+        series.setName("Total Cost over 1-day period.");
+        ll.getData().add(series);
+    }
+
+    private TableView createTable(ResultSet queryRes) {
+        table = new TableView();
         table.setEditable(true);
+
         try{
+            int queryResSize = queryRes.getMetaData().getColumnCount();
             for(int i = 0; i < queryResSize; ++i)
             {
                 final int j = i;
@@ -130,17 +167,31 @@ public class ManagerGUI {
             showAndThrowError("Could not load data from database. Aborting.\n" +e.getMessage());
         }
 
-        tableSection.getChildren().addAll(tableLabel, table);
-        mainSection.getChildren().add(tableSection);
+        return table;
+    }
 
-        primaryGP.add(mainSection, 0, 1);
-        InventoryRequestSection inventoryRequestSection = new InventoryRequestSection(handler);
-        primaryGP.add(inventoryRequestSection, 1, 1);
+    private void updateTable(ResultSet queryRes) {
+        System.out.println(data.size());
+        table.setEditable(true);
+        try{
+            int queryResSize = queryRes.getMetaData().getColumnCount();
+            for(int i = 0; i < queryResSize; ++i)
+            {
+                final int j = i;
+                TableColumn tmpCol = new TableColumn(queryRes.getMetaData().getColumnName(i + 1));
+                tmpCol.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
+                    public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+                        return new SimpleStringProperty(param.getValue().get(j).toString());
+                    }
+                });
 
-        Scene primaryScene = new Scene(primaryGP);
-        primaryStage.setScene(primaryScene);
-        primaryStage.show();
-
+                table.getColumns().addAll(tmpCol);
+            }
+            table.setItems(data);
+        } catch(Exception e)
+        {
+            showAndThrowError("Could not load data from database. Aborting.\n" +e.getMessage());
+        }
     }
 
     private void showAndThrowError(String Message)
@@ -169,27 +220,41 @@ public class ManagerGUI {
             int col = (i + dayOfWeek) % 7;
 
             Button dayButton = new Button(String.valueOf(i + 1));
+            dayButton.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    String day = String.format("%02d", Integer.parseInt(((Button) mouseEvent.getSource()).getText().toString()));
+                    String currentDate = currentYearMonth.toString() + "-" + day;
+                    dbConnectionHandler handler = new dbConnectionHandler();
+                    ResultSet queryRes = handler.requestData(String.format("SELECT * FROM order_log WHERE date::DATE = \'%s\';", currentDate));
+
+                    updateData(queryRes);
+                    updateChart(ll);
+                    updateTable(queryRes);
+                }
+            });
             dayButton.setMaxWidth(Double.MAX_VALUE);
             gridPane.add(dayButton, col, row + 1);
         }
     }
 
-    private void updateCalendar(int monthOffset, GridPane gridPane) {
+    private void updateManagerGUI(int monthOffset, GridPane gridPane) {
         currentYearMonth = currentYearMonth.plusMonths(monthOffset);
 
         // Update the label to display the updated YearMonth
-        ((Label) gridPane.getChildren().filtered(node -> node instanceof Label).get(1)).setText(currentYearMonth.toString());
 
         // Clear the existing day buttons
         gridPane.getChildren().removeIf(node -> node instanceof Button);
+        gridPane.getChildren().removeIf(node -> node instanceof Label);
 
         // Add navigation buttons
         Button prevButton = new Button("<<");
-        prevButton.setOnAction(e -> updateCalendar(-1, gridPane));
+        prevButton.setOnAction(e -> updateManagerGUI(-1, gridPane));
         Button nextButton = new Button(">>");
-        nextButton.setOnAction(e -> updateCalendar(1, gridPane));
+        nextButton.setOnAction(e -> updateManagerGUI(1, gridPane));
 
         gridPane.add(prevButton, 0, 0);
+        gridPane.add(new Label(currentYearMonth.toString()), 1, 0);
         gridPane.add(nextButton, 2, 0);
 
 
