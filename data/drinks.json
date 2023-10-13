@@ -1,0 +1,37 @@
+{
+    "Classic": {
+        "KF Black Tea": [4.00,4.00], 
+        "KF Green Tea": [4.00,4.00], 
+        "KF Oolong Tea": [4.00,4.00], 
+        "KF Honey Tea": [4.00,4.25], 
+        "Longan Jujube Tea": [4.00,4.25]
+    },
+    
+    "espresso": {
+        "Signature Coffee":[4.25,4.50],
+        "Caramel Macchiato":[4.25,4.50],
+        "Mocha":[4.25,4.50],
+        "Latte":[4.25,4.50]
+    },
+    
+    "milk": {
+        "Thai Milk Tea":[4.50,4.50],
+        "Taro Milk Tea":[4.50,4.50],
+        "Coconut Milk Tea":[4.50,4.50],
+        "Almond Milk Tea":[4.50,4.50],
+        "winter Melon Milk Green Tea":[4.50,4.50]
+    },
+    
+    "Slush": {
+        "Mango Slush": [4.50,5.50],
+        "Taro Slush": [4.50,5.50],
+        "Oreo Slush": [4.50,5.50],
+        "Red Bean Slush": [4.50,5.50]
+    },
+    
+    
+    "yogurt": {
+        "Yogurt Orange":[4.50,6.00],
+        "Yogurt Grapefruit":[4.50,6.00]
+    }
+}
