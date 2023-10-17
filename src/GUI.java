@@ -25,18 +25,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.IOException;
+import java.sql.SQLException;
 
 
 public class GUI extends Application{
@@ -62,8 +56,7 @@ public class GUI extends Application{
     Order o;
 
     ObjectMapper mapper;
-    Map<String, Map<String, List<Double>>> drinkMap;
-    Map<String,Double> toppingsMap;
+    dbConnectionHandler handler;
 
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
@@ -72,7 +65,11 @@ public class GUI extends Application{
             
             // Array later becomes all other products in popups.
 
-            drinkPopup new_popup = new drinkPopup(drinkType, drinkMap, toppingsMap ,o);
+            try {
+                drinkPopup new_popup = new drinkPopup(drinkType, o, handler);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         }
     };
@@ -81,10 +78,8 @@ public class GUI extends Application{
     public void start(Stage primaryStage) throws Exception {
 
         mapper = new ObjectMapper();
-        drinkMap = mapper.readValue(new File("data\\drinks.json"), Map.class);
-        toppingsMap = mapper.readValue(new File("data\\toppings.json"), Map.class);
 
-        dbConnectionHandler handler = new dbConnectionHandler();
+        handler = new dbConnectionHandler();
 
         Order.orderIDCounter = handler.requestInt("select MAX(orderid) from order_log;") + 1;
 
@@ -148,7 +143,7 @@ public class GUI extends Application{
         espresso.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         limited = new Button();
-        limited.setText("New Drinks");
+        limited.setText("What's New");
         limited.setStyle("-fx-font:18px Tahoma;");
         limited.setPadding(new Insets(30, 30, 30, 30));
         limited.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
@@ -252,7 +247,7 @@ public class GUI extends Application{
         orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
 
         // Go to pay page.
-        PayPopup pp = new PayPopup(handler, o, toppingsMap);
+        PayPopup pp = new PayPopup(handler, o);
         payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, pp.payHandle);
 
         //orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);
