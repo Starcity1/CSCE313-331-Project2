@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Represents a drink item, typically found in a menu, with various attributes defining its properties.
  * Each drink is automatically assigned a unique ID upon creation.
@@ -12,9 +14,11 @@ public class Drink {
     String ice_level;
     int sugar_level;
     double price;
+    ArrayList<String> toppings;
 
     // Static counter to maintain unique IDs for each drink.
     public static int drinkIDCounter = 1;
+
 
     /**
      * Creates a new Drink with specified properties.
@@ -27,7 +31,7 @@ public class Drink {
      * @param sugar_level the level of sugar in the drink, represented as a string (e.g., "50%")
      * @param price       the price of the drink
      */
-    public Drink(String name, String category, String size, String temp, String ice_level, String sugar_level, double price){
+    public Drink(String name, String category, String size, String temp, String ice_level, String sugar_level, double price, ArrayList<String> toppings){
         this.drinkID = drinkIDCounter;
         this.name = name;
         this.category = category;
@@ -36,6 +40,7 @@ public class Drink {
         this.ice_level = ice_level;
         this.sugar_level = Integer.parseInt(sugar_level.substring(0, sugar_level.length() - 1));
         this.price = price;
+        this.toppings = toppings;
         drinkIDCounter++;
     }
 
@@ -77,7 +82,11 @@ public class Drink {
         return price;
     }
 
-     /**
+    public ArrayList<String> getToppings() {
+        return toppings;
+    }
+
+    /**
      * Calculates the price based on current settings. This method might need access to a database for accurate pricing.
      *
      * @return a double representing the total price

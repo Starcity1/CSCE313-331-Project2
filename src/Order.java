@@ -1,3 +1,5 @@
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -19,14 +21,17 @@ public class Order{
      * List containing all drinks included in this order.
      */
     ArrayList<Drink> drinks;
+    ArrayList<Merch> merch;
+    dbConnectionHandler db;
 
     /**
      * Initializes a new Order instance with a unique order ID and an empty list of drinks.
      */
-    public Order(){
+    public Order(dbConnectionHandler dbase){
         orderID = orderIDCounter;
         drinks = new ArrayList<Drink>();
-
+        merch = new ArrayList<Merch>();
+        db = dbase;
         orderIDCounter++;
     }
 
@@ -37,6 +42,10 @@ public class Order{
      */
     ArrayList<Drink> getDrinks(){
         return drinks;
+    }
+
+    ArrayList<Merch> getMerch(){
+        return merch;
     }
 
     /**
@@ -56,7 +65,11 @@ public class Order{
     void addDrink(Drink d){
         //System.out.println("HELP");
         drinks.add(d);
-        System.out.print(d);
+        //System.out.print(d);
+    }
+    
+    void addMerch(Merch m){
+        merch.add(m);
     }
 
     /**
@@ -64,10 +77,14 @@ public class Order{
      *
      * @return The total price.
      */
-    double calcPrice(){
+    double calcPrice() throws SQLException{
         double sum = 0.0;
         for(int i = 0; i < drinks.size(); i++){
             sum += drinks.get(i).calcPrice();
+            //System.out.println("Currnet" + drinks.get(i).calcPrice());
+        }
+        for(int i = 0; i < merch.size(); i++){
+            sum += merch.get(i).calcPrice();
             //System.out.println("Currnet" + drinks.get(i).calcPrice());
         }
         return sum;

@@ -9,12 +9,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import java.lang.Math;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * This class represents a popup window for selecting drinks, their attributes, and customization options.
@@ -32,10 +28,32 @@ class drinkPopup {
      * @param toppingsMap a map containing available toppings and their respective prices.
      * @param ord         the current order to which this drink will be added.
      */
-    drinkPopup(String drinkType, Map<String, Map<String, List<Double>>> drinksMap, Map<String, Double> toppingsMap, Order ord) {
+    drinkPopup(String drinkType, Order ord, dbConnectionHandler dab) throws SQLException {
+        dbConnectionHandler db = dab;
+        ResultSet rs;
 
-        Set<String> drinks = drinksMap.get(drinkType).keySet();
-        String[] toppings = toppingsMap.keySet().toArray(String[]::new);
+        ArrayList<String> drinks = new ArrayList<String>();
+        if(drinkType == "What's New"){
+            rs = db.requestData("SELECT * FROM menu where category = 'what''s new';");
+        }
+        else{
+            rs = db.requestData("SELECT * FROM menu where category = '" + drinkType.toLowerCase() + "';");
+        }
+
+        while (rs.next()) {
+            String name = rs.getString("name");
+            name = name.substring(0, name.length()-2); // Retrieve the "name" column
+            drinks.add(name);
+            rs.next();
+        }
+
+        ArrayList<String> toppings = new ArrayList<String>();
+        rs = db.requestData("SELECT * FROM menu where category = 'topping';");
+
+        while (rs.next()) {
+            String name = rs.getString("name"); // Retrieve the "name" column
+            toppings.add(name);
+        }
 
 
         Stage popupStage = new Stage();
@@ -93,32 +111,16 @@ class drinkPopup {
         // 14 Toppings, adding 7 in one column and 7 in the other.
         VBox toppingsSection = new VBox();
         GridPane toppingsGP = new GridPane();
-        ArrayList<String> toppingsList = new ArrayList<>(
-                Arrays.asList("Brown Sugar Wow", "Bubble", "Mango Jelly, Aloe Jelly", "Nata Jelly",
-                            "Herbal Jelly", "Milk Cap", "Berry Crystal Bubble", "Crystal Bubble",
-                            "Grape Popping Bubble", "Mango Popping Bubble", "Coffee Popping Bubble", "Red Bean",
-                            "Oreo", "Pudding")
-        );
 
-        // for(int i = 0; i < toppings.size()/2; ++i)
-        // {
-        //     CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i));
-        //     toppingsGP.add(toppingCheckbox, 0, i);
-        // }
-        // for(int i = 0; i < Math.ceil(toppings.size()/2); ++i)
-        // {
-        //     CheckBox toppingCheckbox = new CheckBox(toppingsList.get(i + toppings.size()/2));
-        //     toppingsGP.add(toppingCheckbox, 1, i);
-        // }
         int index = 0;
         for(String item: toppings){
-            if(index < toppings.length/2){
+            if(index < toppings.size()/2){
                 CheckBox toppingCheckbox = new CheckBox(item);
                 toppingsGP.add(toppingCheckbox, 0, index);
             }
             else {
                 CheckBox toppingCheckbox = new CheckBox(item);
-                toppingsGP.add(toppingCheckbox, 1, index - toppings.length/2);
+                toppingsGP.add(toppingCheckbox, 1, index - toppings.size()/2);
             }
             index++;
         }
@@ -189,31 +191,42 @@ class drinkPopup {
          */
         doneButton.setOnAction(event -> {
             String name = ((RadioButton)itemToggleGroup.getSelectedToggle()).getText();
-            String size = ((RadioButton)sizeToggleGroup.getSelectedToggle()).getText();
+            String size = ((RadioButton)sizeToggleGroup.getSelectedToggle()).getText().charAt(0) +"";
             String temp = ((RadioButton)temperatureToggleGroup.getSelectedToggle()).getText();
             String ice_level = ((RadioButton)iceLevelToggleGroup.getSelectedToggle()).getText();
             String sugar_level = ((RadioButton)sugarToggleGroup.getSelectedToggle()).getText();
 
             double price = 0.0;
 
-            if("M:".equals(size)){
-                price = drinksMap.get(drinkType).get(name).get(0);
+            try {
+                ResultSet r2 = db.requestData("SELECT price FROM menu where name = '"+ name +  "_" + size + "';");
+                r2.next();
+                price = r2.getDouble(1);
             }
-            else{
-                price = drinksMap.get(drinkType).get(name).get(1);
+            catch(Exception e) {
+                e.printStackTrace();
             }
+
+            
 
             ObservableList<Node> cblist = toppingsGP.getChildren();
 
-
-            for(int i = 0; i < toppings.length; i++){
+            ArrayList<String> tppList = new ArrayList<String>();
+            for(int i = 0; i < toppings.size(); i++){
                 if(((CheckBox)cblist.get(i)).isSelected()){
-                    price += toppingsMap.get(toppings[i]);
+                    try{
+                        ResultSet r2 = db.requestData("SELECT price FROM menu where name = '"+ ((CheckBox)cblist.get(i)).getText() + "';");
+                        r2.next();
+                        price += r2.getDouble(1);
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                    tppList.add(toppings.get(i));
                 }
             }
 
-            d = new Drink(name, drinkType, size, temp, ice_level, sugar_level, price);
-            System.out.print(((RadioButton)sugarToggleGroup.getSelectedToggle()).getText());
+            d = new Drink(name, drinkType, size, temp, ice_level, sugar_level, price, tppList);
             ord.addDrink(d);
             popupStage.close();
         });
