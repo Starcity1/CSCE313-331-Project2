@@ -146,10 +146,6 @@ public class ManagerGUI {
         popupStage.showAndWait(); 
     }
 
-
-
-
-
     private void populateComboBox(ComboBox combobox) {
         // Request data.
         dbConnectionHandler handler = new dbConnectionHandler();
@@ -165,6 +161,7 @@ public class ManagerGUI {
         }
         combobox.setPromptText("-- Select --");
     }
+    
     private TableView createInventoryTable(dbConnectionHandler handler) {
         TableView table = new TableView();
         table.setEditable(true);
