@@ -8,10 +8,18 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.beans.value.ObservableValue;
@@ -39,6 +47,8 @@ public class ManagerGUI {
     private YearMonth currentYearMonth;
     private ObservableList<ObservableList> data;
     private LineChart<Number, Number> ll;
+    ListView<String> lv = new ListView<String>();
+    dbConnectionHandler handler = new dbConnectionHandler();
 
     ManagerGUI(dbConnectionHandler handler) {
         currentYearMonth = YearMonth.now();
@@ -88,18 +98,25 @@ public class ManagerGUI {
         primaryGP.add(inventoryRequestSection, 0, 2);
 
         // Creating menu
-        Group menuSection = new Group();
+        VBox menuSection = new VBox();
+        HBox listBox = new HBox();
+        HBox.setHgrow(menuSection, Priority.ALWAYS);
         ScrollPane sp = new ScrollPane();
         sp.setPannable(true);
         sp.setFitToWidth(true);
         sp.setMinHeight(600);
         sp.setMaxHeight(600);
-        sp.setMinWidth(350);
+        sp.setMinWidth(350);    
         VBox menuVBox = new VBox();
-        sp.setContent(menuVBox);
+        menuVBox.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        HBox.setHgrow(menuVBox, Priority.ALWAYS);
+        sp.setContent(listBox);
         //set other properties
-        menuVBox.setMinWidth(350);
+        //menuVBox.setMinWidth(350);
         menuVBox.setMaxHeight(600);
+
+        VBox statBox = new VBox();
+
 
         ComboBox combobox = new ComboBox();
         menuVBox.getChildren().add(combobox);
@@ -107,12 +124,42 @@ public class ManagerGUI {
         combobox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                createAllDrinks(menuVBox, combobox.getValue().toString());
+                ObservableList<String> names = createAllDrinks(statBox, combobox.getValue().toString());
+                //System.out.println("Names" + names);
+                changeList(names);
             }
         });
 
-        menuSection.getChildren().addAll(menuVBox, sp);
+
+        listBox.getChildren().addAll(lv, statBox);
+
+
+        ColumnConstraints column1 = new ColumnConstraints();
+        column1.setPercentWidth(50);
+
+        ColumnConstraints column2 = new ColumnConstraints();
+        column2.setPercentWidth(50);
+
+        primaryGP.getColumnConstraints().add(0, column1);
+        primaryGP.getColumnConstraints().add(1, column2);
+
+        menuSection.getChildren().addAll(menuVBox, sp, listBox);
         primaryGP.add(menuSection, 1, 1);
+
+        HBox modBox = new HBox();
+
+        TextField addDeleteField = new TextField();
+        Button addDeleteButton = new Button("Add/Delete");
+        addDeleteButton.setOnAction(e -> modifyList(addDeleteField.getText(), combobox));
+
+
+        TextField priceField = new TextField();
+        Button priceButton = new Button("Change Price To:");
+        priceButton.setOnAction(e -> changePrice(lv.getSelectionModel().getSelectedItem(), priceField.getText()));
+
+        modBox.getChildren().addAll(addDeleteField, addDeleteButton, priceField, priceButton);
+
+        primaryGP.add(modBox, 1, 2);
 
         Scene primaryScene = new Scene(primaryGP);
         primaryStage.setScene(primaryScene);
@@ -120,10 +167,31 @@ public class ManagerGUI {
 
     }
 
+    private void changeList(ObservableList<String> nms){
+        lv.setItems(nms);
+    }
+
+    private void changePrice(String name, String price){
+        double pc = Double.parseDouble(price);
+        handler.executeUpdate("UPDATE menu SET price = " + Double.toString(pc) + " WHERE name = '" + name + "';");
+    }
+
+    private void modifyList(String item, ComboBox combobox){
+        ObservableList<String> ns = lv.getItems();
+        if(ns.contains(item)){
+            handler.executeUpdate("DELETE FROM menu WHERE name = '" + item + "';");
+        }
+        else{
+            int menuID = handler.requestInt("select MAX(menuid) from menu;") + 1;
+            int invID = handler.requestInt("select MAX(inventoryid) from menu;") + 1;
+            handler.executeUpdate(String.format("INSERT INTO menu (menuid, inventoryid, name, category, price) VALUES ('%d', '%d', '%s', '%s', '%.2f');"
+            , menuID, invID, item, combobox.getValue(), 0.0));
+        }
+    }
+
 
     private void populateComboBox(ComboBox combobox) {
         // Request data.
-        dbConnectionHandler handler = new dbConnectionHandler();
         ResultSet categories_res = handler.requestData("SELECT DISTINCT category FROM menu;");
         if (categories_res == null)
             showAndThrowError("Could not retrieve data from menu db.");
@@ -159,29 +227,42 @@ public class ManagerGUI {
 //        System.out.println(menuItems.get("classic"));
 //    }
 
-    private void createAllDrinks(VBox menuVBox, String category) {
-        System.out.println("Adding all drinks from " + category);
+    private ObservableList<String> createAllDrinks(VBox menuVBox, String category) {
+        //System.out.println("Adding all drinks from " + category);
         menuVBox.getChildren().removeIf(node -> node instanceof HBox);
         dbConnectionHandler handler = new dbConnectionHandler();
         category = category.replace("'", "''");
         ResultSet drinksRes = handler.requestData(String.format("SELECT * FROM menu WHERE category = '%s';", category));
+        //ListView<String> lv = new ListView<String>();
+        ObservableList<String> names = FXCollections.observableArrayList();
         if (drinksRes == null) {showAndThrowError("Could not retrieve drink data from menu db.");}
         try {
             while (drinksRes.next()) {
-                // Creating label and request box.
+                names.add(drinksRes.getString(3));
+
                 HBox drinkSection = new HBox();
-                drinkSection.setSpacing(20);
+                drinkSection.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+                drinkSection.setSpacing(20); // Add spacing between children
                 drinkSection.setAlignment(Pos.CENTER_LEFT);
-                Label drinkLabel = new Label(drinksRes.getString(3));
-                drinkLabel.setMinWidth(175);
+                HBox.setHgrow(drinkSection, Priority.ALWAYS); // Allow the parent to grow
+
+                Label priceLabel = new Label("Price: " + drinksRes.getDouble(5));
                 Label drinkQuantity = new Label("Qty: " + 0);
                 Button requestButton = new Button("Request More");
-                drinkSection.getChildren().addAll(drinkLabel, drinkQuantity, requestButton);
+
+                HBox.setHgrow(priceLabel, Priority.ALWAYS);
+                HBox.setHgrow(drinkQuantity, Priority.ALWAYS);
+                HBox.setHgrow(requestButton, Priority.ALWAYS);
+
+                drinkSection.getChildren().addAll(priceLabel, drinkQuantity, requestButton);
                 menuVBox.getChildren().add(drinkSection);
+
             }
+
         } catch (Exception e) {
             showAndThrowError("Unexpected error occured when reading data.\n" + e.getMessage());
         }
+        return names;
     }
 
     private void updateData(ResultSet queryRes) {
