@@ -33,7 +33,11 @@ import javafx.util.Duration;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/**
+ * Main GUI application class that represents the user interface for a beverage ordering system.
+ * This class is responsible for rendering the main stage and its components, handling events,
+ * and displaying the current state of the order.
+ */
 public class GUI extends Application{
     protected Stage primaryStage;
     protected Button classic;
@@ -60,6 +64,11 @@ public class GUI extends Application{
     ObjectMapper mapper;
     dbConnectionHandler handler;
 
+    /**
+     * Event handler for handling mouse click events on drink buttons.
+     * When a drink button is clicked, this handler will trigger the creation
+     * of a popup window where further actions can be taken, such as customizing the drink.
+     */
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
@@ -90,6 +99,14 @@ public class GUI extends Application{
         }
     };
 
+    /**
+     * Starts and initializes the main stage, setting up its layout, components, and event handlers.
+     * It also initializes the connection to the database and sets up the initial state of the application.
+     * 
+     * @param primaryStage the primary stage for this application, onto which
+     *                     the application scene can be set.
+     * @throws Exception if there is an error during the initialization process.
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
 
