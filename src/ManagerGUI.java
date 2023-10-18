@@ -1,5 +1,7 @@
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.chart.LineChart;
@@ -11,6 +13,13 @@ import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.collections.ObservableList;
+import javafx.geometry.Orientation;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.ChangeListener;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
@@ -29,7 +38,6 @@ public class ManagerGUI {
     Stage primaryStage;
     private YearMonth currentYearMonth;
     private ObservableList<ObservableList> data;
-    private TableView table;
     private LineChart<Number, Number> ll;
 
     ManagerGUI(dbConnectionHandler handler) {
@@ -41,6 +49,8 @@ public class ManagerGUI {
         primaryStage.setMinHeight(600);
         primaryStage.setMinWidth(800);
         GridPane primaryGP = new GridPane();
+        primaryGP.setHgap(25);
+        primaryGP.setVgap(25);
 
         ResultSet queryRes = handler.requestData("SELECT * FROM order_log WHERE date::DATE = \'2022-01-11\';");
         updateData(queryRes);
@@ -73,21 +83,105 @@ public class ManagerGUI {
         chartCalendarSection.getChildren().add(calendarGridPane);
         mainSection.getChildren().add(chartCalendarSection);
 
-        // Creating Table
-        VBox tableSection = new VBox();
-        Label tableLabel = new Label("Table from orders");
-        table = createTable(queryRes);
-        tableSection.getChildren().addAll(tableLabel, table);
-        mainSection.getChildren().add(tableSection);
-
         primaryGP.add(mainSection, 0, 1);
         InventoryRequestSection inventoryRequestSection = new InventoryRequestSection(handler);
-        primaryGP.add(inventoryRequestSection, 1, 1);
+        primaryGP.add(inventoryRequestSection, 0, 2);
+
+        // Creating menu
+        Group menuSection = new Group();
+        ScrollPane sp = new ScrollPane();
+        sp.setPannable(true);
+        sp.setFitToWidth(true);
+        sp.setMinHeight(600);
+        sp.setMaxHeight(600);
+        sp.setMinWidth(350);
+        VBox menuVBox = new VBox();
+        sp.setContent(menuVBox);
+        //set other properties
+        menuVBox.setMinWidth(350);
+        menuVBox.setMaxHeight(600);
+
+        ComboBox combobox = new ComboBox();
+        menuVBox.getChildren().add(combobox);
+        populateComboBox(combobox);
+        combobox.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                createAllDrinks(menuVBox, combobox.getValue().toString());
+            }
+        });
+
+        menuSection.getChildren().addAll(menuVBox, sp);
+        primaryGP.add(menuSection, 1, 1);
 
         Scene primaryScene = new Scene(primaryGP);
         primaryStage.setScene(primaryScene);
         primaryStage.show();
 
+    }
+
+
+    private void populateComboBox(ComboBox combobox) {
+        // Request data.
+        dbConnectionHandler handler = new dbConnectionHandler();
+        ResultSet categories_res = handler.requestData("SELECT DISTINCT category FROM menu;");
+        if (categories_res == null)
+            showAndThrowError("Could not retrieve data from menu db.");
+
+        try {
+            while(categories_res.next())
+                combobox.getItems().add(categories_res.getString(1));
+        } catch (Exception e) {
+            showAndThrowError("Unexpected error occured when reading data.\n" + e.getMessage());
+        }
+        combobox.setPromptText("-- Select --");
+    }
+
+//    private void populateCategories() {
+//        // Getting all categories
+//        dbConnectionHandler handler = new dbConnectionHandler();
+//        ResultSet categories_res = handler.requestData("SELECT DISTINCT category FROM menu;");
+//        if (categories_res == null) {showAndThrowError("Could not retrieve category data from menu db.");}
+//        try {
+//            while(categories_res.next()) {
+//                String drink = categories_res.getString(1).replace("'", "''");
+//                String drinksQuerry = String.format("SELECT * FROM menu WHERE category = '%s';", drink);
+//                ResultSet drinks_res = handler.requestData(drinksQuerry);
+//                if (drinks_res == null) {showAndThrowError("Could not retrieve drink data from menu db.");}
+//                // Populating drink.
+//                menuItems.put(categories_res.getString(1), new ArrayList<String>());
+//                while(drinks_res.next())
+//                    menuItems.get(categories_res.getString(1)).add(drinks_res.getString(2));
+//            }
+//        } catch (Exception e) {
+//            showAndThrowError("Unexpected error occured when reading data.\n" + e.getMessage());
+//        }
+//        System.out.println(menuItems.get("classic"));
+//    }
+
+    private void createAllDrinks(VBox menuVBox, String category) {
+        System.out.println("Adding all drinks from " + category);
+        menuVBox.getChildren().removeIf(node -> node instanceof HBox);
+        dbConnectionHandler handler = new dbConnectionHandler();
+        category = category.replace("'", "''");
+        ResultSet drinksRes = handler.requestData(String.format("SELECT * FROM menu WHERE category = '%s';", category));
+        if (drinksRes == null) {showAndThrowError("Could not retrieve drink data from menu db.");}
+        try {
+            while (drinksRes.next()) {
+                // Creating label and request box.
+                HBox drinkSection = new HBox();
+                drinkSection.setSpacing(20);
+                drinkSection.setAlignment(Pos.CENTER_LEFT);
+                Label drinkLabel = new Label(drinksRes.getString(3));
+                drinkLabel.setMinWidth(175);
+                Label drinkQuantity = new Label("Qty: " + 0);
+                Button requestButton = new Button("Request More");
+                drinkSection.getChildren().addAll(drinkLabel, drinkQuantity, requestButton);
+                menuVBox.getChildren().add(drinkSection);
+            }
+        } catch (Exception e) {
+            showAndThrowError("Unexpected error occured when reading data.\n" + e.getMessage());
+        }
     }
 
     private void updateData(ResultSet queryRes) {
@@ -143,59 +237,7 @@ public class ManagerGUI {
         ll.getData().add(series);
     }
 
-    private TableView createTable(ResultSet queryRes) {
-        table = new TableView();
-        table.setEditable(true);
-
-        try{
-            int queryResSize = queryRes.getMetaData().getColumnCount();
-            for(int i = 0; i < queryResSize; ++i)
-            {
-                final int j = i;
-                TableColumn tmpCol = new TableColumn(queryRes.getMetaData().getColumnName(i + 1));
-                tmpCol.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
-                    public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
-                        return new SimpleStringProperty(param.getValue().get(j).toString());
-                    }
-                });
-
-                table.getColumns().addAll(tmpCol);
-            }
-            table.setItems(data);
-        } catch(Exception e)
-        {
-            showAndThrowError("Could not load data from database. Aborting.\n" +e.getMessage());
-        }
-
-        return table;
-    }
-
-    private void updateTable(ResultSet queryRes) {
-        System.out.println(data.size());
-        table.setEditable(true);
-        try{
-            int queryResSize = queryRes.getMetaData().getColumnCount();
-            for(int i = 0; i < queryResSize; ++i)
-            {
-                final int j = i;
-                TableColumn tmpCol = new TableColumn(queryRes.getMetaData().getColumnName(i + 1));
-                tmpCol.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
-                    public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
-                        return new SimpleStringProperty(param.getValue().get(j).toString());
-                    }
-                });
-
-                table.getColumns().addAll(tmpCol);
-            }
-            table.setItems(data);
-        } catch(Exception e)
-        {
-            showAndThrowError("Could not load data from database. Aborting.\n" +e.getMessage());
-        }
-    }
-
-    private void showAndThrowError(String Message)
-    {
+    private void showAndThrowError(String Message) {
         Alert failedConnection = new Alert(Alert.AlertType.ERROR);
         failedConnection.setTitle("Connection Error");
         failedConnection.setHeaderText("Error!");
@@ -230,7 +272,6 @@ public class ManagerGUI {
 
                     updateData(queryRes);
                     updateChart(ll);
-                    updateTable(queryRes);
                 }
             });
             dayButton.setMaxWidth(Double.MAX_VALUE);
