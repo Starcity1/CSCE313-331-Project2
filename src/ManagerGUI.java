@@ -15,11 +15,9 @@ import javafx.util.Callback;
 import javafx.beans.property.SimpleStringProperty;
 import java.util.List;
 import javafx.scene.chart.XYChart;
-
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,10 +25,21 @@ import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * ManagerGUI is responsible for creating and managing the main GUI for a Manager's dashboard.
+ * It includes functionalities such as displaying orders data, navigating through a calendar, 
+ * and handling inventory requests.
+ */
 public class ManagerGUI {
     Stage primaryStage;
     private YearMonth currentYearMonth;
     private ObservableList<ObservableList> data;
+
+    /**
+     * Constructs a ManagerGUI object with a connection to the database.
+     *
+     * @param handler The database connection handler to be used for querying data.
+     */
     ManagerGUI(dbConnectionHandler handler)
     {
         currentYearMonth = YearMonth.now();
@@ -143,6 +152,11 @@ public class ManagerGUI {
 
     }
 
+     /**
+     * Displays an error message in an alert dialog and terminates the application.
+     *
+     * @param message The error message to display.
+     */
     private void showAndThrowError(String Message)
     {
         Alert failedConnection = new Alert(Alert.AlertType.ERROR);
@@ -153,6 +167,11 @@ public class ManagerGUI {
         System.exit(1);
     }
 
+     /**
+     * Fills the calendar grid with appropriate day labels and buttons corresponding to the days.
+     *
+     * @param gridPane The GridPane representing the calendar.
+     */
     private void populateCalendar(GridPane gridPane) {
         LocalDate startDate = currentYearMonth.atDay(1);
         int daysInMonth = currentYearMonth.lengthOfMonth();
@@ -174,6 +193,12 @@ public class ManagerGUI {
         }
     }
 
+    /**
+     * Updates the calendar displayed to the user, shifting the months shown.
+     *
+     * @param monthOffset A positive or negative number indicating how many months to move forward or backward.
+     * @param gridPane    The GridPane representing the calendar.
+     */
     private void updateCalendar(int monthOffset, GridPane gridPane) {
         currentYearMonth = currentYearMonth.plusMonths(monthOffset);
 
@@ -192,18 +217,26 @@ public class ManagerGUI {
         gridPane.add(prevButton, 0, 0);
         gridPane.add(nextButton, 2, 0);
 
-
         // Repopulate the calendar for the new month
         populateCalendar(gridPane);
     }
 }
 
+/**
+ * InventoryRequestSection is a UI component allowing managers to request inventory items.
+ * It contains fields for item details and a submission button to process the request.
+ */
 class InventoryRequestSection extends VBox {
     private TextField itemNameField;
     private TextField quantityField;
     private Button submitButton;
     private dbConnectionHandler handler;
 
+    /**
+     * Constructs an InventoryRequestSection with the necessary UI components and a link to the database.
+     *
+     * @param handler The database connection handler for processing inventory requests.
+     */
     public InventoryRequestSection(dbConnectionHandler handler) {
         this.handler = handler;
 
@@ -221,6 +254,9 @@ class InventoryRequestSection extends VBox {
         getChildren().addAll(titleLabel, itemNameField, quantityField, submitButton);
     }
 
+    /**
+     * Handles the submission of an inventory request, input validation, and database insertion.
+     */
     private void submitRequest() {
         String itemName = itemNameField.getText().trim();
         int quantity;
@@ -241,6 +277,11 @@ class InventoryRequestSection extends VBox {
         showInfo("Inventory request added successfully!");
     }
 
+    /**
+     * Displays an error message in an alert dialog to the user.
+     *
+     * @param message The error message to display.
+     */
     private void showAndThrowError(String message) {
         Alert failedInput = new Alert(Alert.AlertType.ERROR);
         failedInput.setTitle("Input Error");
@@ -249,6 +290,11 @@ class InventoryRequestSection extends VBox {
         failedInput.showAndWait();
     }
 
+    /**
+     * Displays an information alert dialog to the user.
+     *
+     * @param message The information message to display.
+     */
     private void showInfo(String message) {
         Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
         infoAlert.setTitle("Info");

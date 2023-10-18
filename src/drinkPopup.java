@@ -16,8 +16,22 @@ import java.util.Set;
 
 import java.lang.Math;
 
+/**
+ * This class represents a popup window for selecting drinks, their attributes, and customization options.
+ * It allows users to choose various aspects of their drink such as size, temperature, toppings, sugar level, and ice level.
+ * Upon completion, the user's selections are reflected in their order.
+ */
 class drinkPopup {
     Drink d;
+
+    /**
+     * Constructs a new drink selection popup with customizable drink options.
+     *
+     * @param drinkType   the type of drink to be selected, e.g., "Tea", "Coffee".
+     * @param drinksMap   a map containing drink types, names, and their respective pricing.
+     * @param toppingsMap a map containing available toppings and their respective prices.
+     * @param ord         the current order to which this drink will be added.
+     */
     drinkPopup(String drinkType, Map<String, Map<String, List<Double>>> drinksMap, Map<String, Double> toppingsMap, Order ord) {
 
         Set<String> drinks = drinksMap.get(drinkType).keySet();
@@ -168,6 +182,11 @@ class drinkPopup {
             popupStage.close();
         });
 
+        /**
+         * Event handler for the "Done" button.
+         * It captures all the selections made by the user and compiles them into a Drink object, which is then added to the current order.
+         * After the selections have been saved and the order updated, the popup window is closed.
+         */
         doneButton.setOnAction(event -> {
             String name = ((RadioButton)itemToggleGroup.getSelectedToggle()).getText();
             String size = ((RadioButton)sizeToggleGroup.getSelectedToggle()).getText();

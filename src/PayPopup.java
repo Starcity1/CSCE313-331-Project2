@@ -2,9 +2,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-
 import javafx.event.EventHandler;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,18 +12,32 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 
+/**
+ * Represents a popup window for handling payment actions.
+ * This class extends the GUI class and manages the payment process, including tip handling and receipt preferences.
+ */
 public class PayPopup extends GUI {
 
     dbConnectionHandler db;
     Order ord;
     private double tip = 0.0;
 
+    /**
+     * Constructor for creating a PayPopup with specific database connection handler and order.
+     *
+     * @param handler the database connection handler responsible for database interactions
+     * @param o the order for which the payment will be processed
+     */
     PayPopup(dbConnectionHandler handler, Order o){
         db = handler;
         System.out.print("FIRST OR");
         ord = o;
     }
 
+    /**
+     * An event handler for handling user interactions within the payment popup.
+     * This includes collecting payment information and processing the payment.
+     */
     public EventHandler<MouseEvent> payHandle = new EventHandler<>() {
         @Override
         public void handle(MouseEvent mouseEvent)
