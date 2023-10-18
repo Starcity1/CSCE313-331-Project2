@@ -1,7 +1,8 @@
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.chart.LineChart;
@@ -22,31 +23,21 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.geometry.Orientation;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.value.ChangeListener;
-import java.text.DateFormat;
+import javafx.scene.control.TreeView;
+import javafx.scene.control.TreeItem;
 import java.util.*;
 import java.text.SimpleDateFormat;
-import javafx.geometry.Orientation;
-import javafx.beans.value.ObservableValue;
-import javafx.beans.value.ChangeListener;
-import java.text.DateFormat;
-import java.util.*;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import javafx.beans.value.ObservableValue;
+
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.chart.XYChart;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.sql.*;
 import java.util.Date;
-import java.util.logging.Handler;
 import java.util.stream.Collectors;
 
 /**
@@ -62,6 +53,8 @@ public class ManagerGUI {
     private ObservableList<ObservableList> excessData;
     private LineChart<Number, Number> ll;
     private String currentDate = "2022-01-01";
+    private String maxDate = "2022-01-01";
+    String drinkSelected = null;
     private Label tableLabel;
     private String excessQuery = String.format("select t12.name from (select t1.name from (select drink.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid where date between '%s' and localtimestamp group by drink.name having count(*) < 0.1 * (select quantity from inventory where name = drink.name)) as t1 union select t2.name from (select topping.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid inner join topping on drink.drinkid = topping.drinkid where date between '%s' and localtimestamp group by topping.name having count(*) < 0.1 * (select quantity from inventory where name = topping.name)) as t2) as t12 union select t3.name from (select merchandise.name, count(*) from order_log inner join merchandise on order_log.orderid = merchandise.orderid where date between '%s' and localtimestamp group by merchandise.name having count(*) < 0.1 * (select quantity from inventory where name = merchandise.name)) as t3;",
             currentDate, currentDate, currentDate);
@@ -81,18 +74,13 @@ public class ManagerGUI {
         Stage primaryStage = new Stage();
         primaryStage.setTitle("Manager's GUI");
         primaryStage.setMinHeight(600);
-        primaryStage.setMinWidth(800);
+        primaryStage.setMinWidth(850);
         GridPane primaryGP = new GridPane();
         primaryGP.setHgap(25);
         primaryGP.setVgap(25);
 
-        ResultSet queryRes = handler.requestData("SELECT * FROM order_log WHERE date::DATE = \'2022-01-01\';");
+        ResultSet queryRes = handler.requestData(String.format("SELECT * FROM order_log WHERE date::DATE = \'%s\';", currentDate));
         updateData(queryRes);
-
-        // Tab seciton
-        //VBox tabSection = new VBox();
-        //tabSection.setSpacing(10);
-
 
         // Main section
         VBox mainSection = new VBox();
@@ -113,10 +101,12 @@ public class ManagerGUI {
         calendarGridPane.add(prevButton, 0, 0);
         calendarGridPane.add(new Label(currentYearMonth.toString()), 1, 0);
         calendarGridPane.add(nextButton, 2, 0);
-        ComboBox calendarCB = new ComboBox();
-        calendarCB.setPromptText("-- Select --");
-        calendarCB.getItems().addAll("1 Day", "1 Week", "1 Month", "1 Year");
-        calendarCB.setOnAction(new EventHandler<ActionEvent>() {
+
+        // Creating time comboBox
+        ComboBox timeComboBox = new ComboBox();
+        timeComboBox.setPromptText("-- Time --");
+        timeComboBox.getItems().addAll("1 Day", "1 Week", "1 Month", "1 Year");
+        timeComboBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 try {
@@ -125,39 +115,92 @@ public class ManagerGUI {
                     // Create new date.
                     Calendar c = Calendar.getInstance();
                     c.setTime(curDateConverted);
-                    String newMaxDate;
-                    switch (calendarCB.getValue().toString()) {
+                    switch (timeComboBox.getValue().toString()) {
                         case "1 Day":
                             c.add(Calendar.DATE, 1);
-                            newMaxDate = sdf.format(c.getTime());
+                            maxDate = sdf.format(c.getTime());
                             break;
                         case "1 Week":
                             c.add(Calendar.DATE, 7);
-                            newMaxDate = sdf.format(c.getTime());
+                            maxDate = sdf.format(c.getTime());
                             break;
                         case "1 Month":
                             c.add(Calendar.DATE, 30);
-                            newMaxDate = sdf.format(c.getTime());
+                            maxDate = sdf.format(c.getTime());
                             break;
                         case "1 Year":
                             c.add(Calendar.DATE, 365);
-                            newMaxDate = sdf.format(c.getTime());
+                            maxDate = sdf.format(c.getTime());
                             break;
                         default:
-                            newMaxDate = sdf.format(curDateConverted);
+                            maxDate = sdf.format(curDateConverted);
                     }
-
-                    // Update data.
-                    ResultSet newData = handler.requestData
-                            (String.format("SELECT * FROM order_log WHERE date >= \'%s\' AND date <= \'%s\';", currentDate, newMaxDate));
-                    updateData(newData);
-                    updateChart(ll, newMaxDate);
                 } catch (Exception e) {
                     showAndThrowError("Error: Invalid date was given!");
                 }
             }
         });
-        calendarGridPane.add(calendarCB, 7, 0);
+        calendarGridPane.add(timeComboBox, 7, 0);
+        Button updateLineChart = new Button("Update Chart");
+        updateLineChart.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+            @Override
+            public void handle(Event event) {
+                // Update data.
+                if(drinkSelected == null) {
+                    Alert failedConnection = new Alert(Alert.AlertType.INFORMATION);
+                    failedConnection.setTitle("Connection Error");
+                    failedConnection.setHeaderText("Error!");
+                    failedConnection.setContentText("Please select a drink before filtering data.");
+                    failedConnection.showAndWait();
+                    return;
+                }
+                ResultSet newData = handler.requestData
+                        (String.format(
+                                "SELECT * from order_log ol JOIN drink d ON ol.orderid = d.orderid WHERE d.name = '%s' AND ol.date >= '%s' AND ol.date <= '%s';"
+                                , drinkSelected.replace("_M", "").replace("_L", ""), currentDate, maxDate));
+                System.out.println((String.format(
+                        "SELECT * from order_log ol JOIN drink d ON ol.orderid = d.orderid WHERE d.name = '%s' AND ol.date >= '%s' AND ol.date <= '%s';"
+                        , drinkSelected.replace("_M", "").replace("_L", ""), currentDate, maxDate)));
+                updateData(newData);
+                updateChart(ll, maxDate);
+            }
+        });
+        calendarGridPane.add(updateLineChart, 7, 9);
+
+        // Creating treevoiew for chart.
+        Button selectCategory = new Button("-- Category --");
+        selectCategory.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                Stage categoryStage = new Stage();
+                categoryStage.setWidth(300);
+                categoryStage.setHeight(400);
+                GridPane categoryGP = new GridPane();
+                TreeItem base = new TreeItem("Select category.");
+                populateTree(base);
+                TreeView categoryTree = new TreeView(base);
+                categoryTree.setPrefSize(300, 400);
+                MultipleSelectionModel<TreeItem<String>> tvSelModel = categoryTree.getSelectionModel();
+                tvSelModel.selectedItemProperty().addListener(new ChangeListener<TreeItem<String>>() {
+                    public void changed(ObservableValue<? extends TreeItem<String>> changed, TreeItem<String> oldVal,
+                                        TreeItem<String> newVal) {
+                        // Display the selection and its complete path from the root.
+                        if (newVal != null) {
+
+                            // Drink.
+                            drinkSelected = newVal.getValue();
+                            categoryStage.close();
+                        }
+                    }
+                });
+                categoryGP.add(categoryTree, 0, 0);
+                Scene categoryPopUp = new Scene(categoryGP);
+                categoryStage.setScene(categoryPopUp);
+                categoryStage.show();
+            }
+        });
+        calendarGridPane.add(selectCategory, 7, 1);
+
         populateCalendar(calendarGridPane);
         chartCalendarSection.getChildren().add(calendarGridPane);
         mainSection.getChildren().add(chartCalendarSection);
@@ -254,7 +297,29 @@ public class ManagerGUI {
         primaryStage.show();
     }
 
-     private void generateRestockReport(dbConnectionHandler handler) {
+    private void populateTree(TreeItem base) {
+        ResultSet categories_res = handler.requestData("SELECT DISTINCT category FROM menu;");
+        if (categories_res == null) {showAndThrowError("Could not retrieve category data from menu db.");}
+
+        try {
+            while(categories_res.next()) {
+                String categoryString = categories_res.getString(1);
+                TreeItem categoryTreeItem = new TreeItem<String>(categoryString);
+                base.getChildren().add(categoryTreeItem);
+                ResultSet drinksRes = handler.requestData(String.format("SELECT name FROM menu WHERE category = \'%s\';", categoryString.replace("'", "''")));
+                if (drinksRes == null) {showAndThrowError("Could not retrieve drink data from menu db.");}
+                while(drinksRes.next()) {
+                    String drinkItem = drinksRes.getString(1);
+                    TreeItem drinkTreeItem = new TreeItem<String>(drinkItem);
+                    categoryTreeItem.getChildren().add(drinkTreeItem);
+                }
+            }
+        } catch (Exception e) {
+            showAndThrowError("Unexpected error occured when reading data.\n" + e.getMessage());
+        }
+    }
+
+    private void generateRestockReport(dbConnectionHandler handler) {
         // Create a new stage for the popup
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -268,6 +333,7 @@ public class ManagerGUI {
         popupStage.setScene(scene);
         popupStage.showAndWait(); 
     }
+
     private void changeList(ObservableList<String> nms){
         lv.setItems(nms);
     }
@@ -303,7 +369,6 @@ public class ManagerGUI {
             invID, item, 0, 0));
         }
     }
-
 
     private void populateComboBox(ComboBox combobox) {
         // Request data.
@@ -575,9 +640,9 @@ public class ManagerGUI {
                 public void handle(MouseEvent mouseEvent) {
                     String day = String.format("%02d", Integer.parseInt(((Button) mouseEvent.getSource()).getText().toString()));
                     currentDate = currentYearMonth.toString() + "-" + day;
+                    maxDate = currentDate;
                     dbConnectionHandler handler = new dbConnectionHandler();
                     ResultSet queryRes = handler.requestData(String.format("SELECT * FROM order_log WHERE date::DATE = \'%s\';", currentDate));
-
                     updateData(queryRes);
                     updateChart(ll, null);
 
@@ -585,7 +650,7 @@ public class ManagerGUI {
                     tableLabel.setText("Items on Excess for " + currentDate);
                     table.getItems().clear();
                     excessQuery = String.format("select t12.name from (select t1.name from (select drink.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid where date between '%s' and localtimestamp group by drink.name having count(*) < 0.1 * (select quantity from inventory where name = drink.name)) as t1 union select t2.name from (select topping.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid inner join topping on drink.drinkid = topping.drinkid where date between '%s' and localtimestamp group by topping.name having count(*) < 0.1 * (select quantity from inventory where name = topping.name)) as t2) as t12 union select t3.name from (select merchandise.name, count(*) from order_log inner join merchandise on order_log.orderid = merchandise.orderid where date between '%s' and localtimestamp group by merchandise.name having count(*) < 0.1 * (select quantity from inventory where name = merchandise.name)) as t3;",
-                                    currentDate, currentDate, currentDate);
+                            currentDate, currentDate, currentDate);
                     ResultSet excessRes = handler.requestData(excessQuery);
                     updateExcessData(excessRes);
                     updateTable(excessRes);
@@ -608,7 +673,9 @@ public class ManagerGUI {
         // Update the label to display the updated YearMonth
 
         // Clear the existing day buttons
-        gridPane.getChildren().removeIf(node -> node instanceof Button);
+        gridPane.getChildren().removeIf(node -> node instanceof Button
+                && ((Button) node).getText() != "Update Chart"
+                && ((Button) node).getText() != "-- Category --");
         gridPane.getChildren().removeIf(node -> node instanceof Label);
 
         // Add navigation buttons
