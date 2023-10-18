@@ -33,18 +33,25 @@ import java.time.YearMonth;
 
 import java.sql.*;
 import java.util.Date;
+import java.util.logging.Handler;
 import java.util.stream.Collectors;
 
 public class ManagerGUI {
     Stage primaryStage;
     private YearMonth currentYearMonth;
+    TableView table;
     private ObservableList<ObservableList> data;
+    private ObservableList<ObservableList> excessData;
     private LineChart<Number, Number> ll;
     private String currentDate = "2022-01-01";
+    private Label tableLabel;
+    private String excessQuery = String.format("select t12.name from (select t1.name from (select drink.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid where date between '%s' and localtimestamp group by drink.name having count(*) < 0.1 * (select quantity from inventory where name = drink.name)) as t1 union select t2.name from (select topping.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid inner join topping on drink.drinkid = topping.drinkid where date between '%s' and localtimestamp group by topping.name having count(*) < 0.1 * (select quantity from inventory where name = topping.name)) as t2) as t12 union select t3.name from (select merchandise.name, count(*) from order_log inner join merchandise on order_log.orderid = merchandise.orderid where date between '%s' and localtimestamp group by merchandise.name having count(*) < 0.1 * (select quantity from inventory where name = merchandise.name)) as t3;",
+            currentDate, currentDate, currentDate);
 
     ManagerGUI(dbConnectionHandler handler) {
         currentYearMonth = YearMonth.now();
         data = FXCollections.observableArrayList();
+        excessData = FXCollections.observableArrayList();
 
         Stage primaryStage = new Stage();
         primaryStage.setTitle("Manager's GUI");
@@ -138,6 +145,15 @@ public class ManagerGUI {
         InventoryRequestSection inventoryRequestSection = new InventoryRequestSection(handler);
         primaryGP.add(inventoryRequestSection, 0, 2);
 
+        // Creating Table
+        VBox tableSection = new VBox();
+        tableLabel = new Label("Items on Excess for " + currentDate);
+        // Getting Jaejin's result.
+        ResultSet excessRes = handler.requestData(excessQuery);
+        table = createTable(excessRes);
+        tableSection.getChildren().addAll(tableLabel, table);
+        mainSection.getChildren().add(tableSection);
+
         // Creating menu
         Group menuSection = new Group();
         ScrollPane sp = new ScrollPane();
@@ -188,28 +204,6 @@ public class ManagerGUI {
         combobox.setPromptText("-- Select --");
     }
 
-//    private void populateCategories() {
-//        // Getting all categories
-//        dbConnectionHandler handler = new dbConnectionHandler();
-//        ResultSet categories_res = handler.requestData("SELECT DISTINCT category FROM menu;");
-//        if (categories_res == null) {showAndThrowError("Could not retrieve category data from menu db.");}
-//        try {
-//            while(categories_res.next()) {
-//                String drink = categories_res.getString(1).replace("'", "''");
-//                String drinksQuerry = String.format("SELECT * FROM menu WHERE category = '%s';", drink);
-//                ResultSet drinks_res = handler.requestData(drinksQuerry);
-//                if (drinks_res == null) {showAndThrowError("Could not retrieve drink data from menu db.");}
-//                // Populating drink.
-//                menuItems.put(categories_res.getString(1), new ArrayList<String>());
-//                while(drinks_res.next())
-//                    menuItems.get(categories_res.getString(1)).add(drinks_res.getString(2));
-//            }
-//        } catch (Exception e) {
-//            showAndThrowError("Unexpected error occured when reading data.\n" + e.getMessage());
-//        }
-//        System.out.println(menuItems.get("classic"));
-//    }
-
     private void createAllDrinks(VBox menuVBox, String category) {
         System.out.println("Adding all drinks from " + category);
         menuVBox.getChildren().removeIf(node -> node instanceof HBox);
@@ -255,6 +249,26 @@ public class ManagerGUI {
         }
     }
 
+    private void updateExcessData(ResultSet queryRes) {
+        int queryResSize = 0;
+        excessData.clear();
+        try {
+            if(queryRes == null) {throw new RuntimeException("Error");}
+            queryResSize = queryRes.getMetaData().getColumnCount();
+            while(queryRes.next())
+            {
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for(int i = 1; i <= queryResSize; ++i)
+                {
+                    row.add(queryRes.getString(i));
+                }
+                excessData.add(row);
+            }
+        } catch (Exception e) {
+            showAndThrowError("Invalid input was entered to database.");
+        }
+    }
+
     private LineChart createChart() {
         NumberAxis x = new NumberAxis();
         x.setLabel("Day described");
@@ -294,6 +308,59 @@ public class ManagerGUI {
         ll.getData().add(series);
     }
 
+    private TableView createTable(ResultSet queryRes) {
+        table = new TableView();
+        table.setEditable(true);
+
+        updateExcessData(queryRes);
+
+        try{
+            int queryResSize = queryRes.getMetaData().getColumnCount();
+            for(int i = 0; i < queryResSize; ++i)
+            {
+                final int j = i;
+                TableColumn tmpCol = new TableColumn(queryRes.getMetaData().getColumnName(i + 1));
+                tmpCol.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
+                    public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+                        return new SimpleStringProperty(param.getValue().get(j).toString());
+                    }
+                });
+
+                table.getColumns().addAll(tmpCol);
+            }
+            table.setItems(excessData);
+        } catch(Exception e)
+        {
+            showAndThrowError("Could not load data from database. Aborting.\n" +e.getMessage());
+        }
+
+        return table;
+    }
+
+    private void updateTable(ResultSet queryRes) {
+        table.setEditable(true);
+        table.getColumns().clear();
+        try{
+            int queryResSize = queryRes.getMetaData().getColumnCount();
+            for(int i = 0; i < queryResSize; ++i)
+            {
+                final int j = i;
+                TableColumn tmpCol = new TableColumn(queryRes.getMetaData().getColumnName(i + 1));
+                tmpCol.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
+                    public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+                        return new SimpleStringProperty(param.getValue().get(j).toString());
+                    }
+                });
+
+                table.getColumns().addAll(tmpCol);
+            }
+            table.setItems(excessData);
+        } catch(Exception e)
+        {
+            showAndThrowError("Could not load data from database. Aborting.\n" +e.getMessage());
+        }
+    }
+
     private void showAndThrowError(String Message) {
         Alert failedConnection = new Alert(Alert.AlertType.ERROR);
         failedConnection.setTitle("Connection Error");
@@ -329,6 +396,16 @@ public class ManagerGUI {
 
                     updateData(queryRes);
                     updateChart(ll, null);
+
+                    // Getting Jaejin's result.
+                    tableLabel.setText("Items on Excess for " + currentDate);
+                    System.out.println("Items on Excess for " + currentDate);
+                    table.getItems().clear();
+                    excessQuery = String.format("select t12.name from (select t1.name from (select drink.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid where date between '%s' and localtimestamp group by drink.name having count(*) < 0.1 * (select quantity from inventory where name = drink.name)) as t1 union select t2.name from (select topping.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid inner join topping on drink.drinkid = topping.drinkid where date between '%s' and localtimestamp group by topping.name having count(*) < 0.1 * (select quantity from inventory where name = topping.name)) as t2) as t12 union select t3.name from (select merchandise.name, count(*) from order_log inner join merchandise on order_log.orderid = merchandise.orderid where date between '%s' and localtimestamp group by merchandise.name having count(*) < 0.1 * (select quantity from inventory where name = merchandise.name)) as t3;",
+                                    currentDate, currentDate, currentDate);
+                    ResultSet excessRes = handler.requestData(excessQuery);
+                    updateExcessData(excessRes);
+                    updateTable(excessRes);
                 }
             });
             dayButton.setMaxWidth(Double.MAX_VALUE);
