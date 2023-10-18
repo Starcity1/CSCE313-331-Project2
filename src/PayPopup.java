@@ -99,6 +99,7 @@ public class PayPopup extends GUI {
                 @Override
                 public void handle(MouseEvent mouseEvent1) {
                     ArrayList<Drink> drinks = ord.getDrinks();
+                    ArrayList<Merch> merch = ord.getMerch();
                     int empID = 0001;
                     
                     LocalDate currentDate = LocalDate.now();
@@ -122,9 +123,18 @@ public class PayPopup extends GUI {
                             tpID++;
                         }
                     }
+                    for(int i = 0; i < merch.size(); i++) {
+                        db.executeUpdate(String.format("INSERT INTO merchandise (merchid, orderid, name, price) VALUES ('%d', '%d', '%s', '%.2f');", merch.get(i).getMerchID(), ord.getOrderID(), merch.get(i).getName(), merch.get(i).calcPrice()));
+                    }
+                    double calP = 0.0;
+                    try {
+                        calP = ord.calcPrice();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     String insertQuery = String.format(
                         "INSERT INTO order_log (orderID, empID, date, time, total, tip) VALUES (%d, %d, '%s', '%s', %f, %f);",
-                        ord.orderID, empID, currentDate, currentTime, ord.calcPrice(), tip
+                        ord.orderID, empID, currentDate, currentTime, calP, tip
                     );
                     db.executeUpdate(insertQuery);
 
