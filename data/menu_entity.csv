@@ -1,260 +1,260 @@
-menuid,name,category,price
-1,Brown Sugar Wow,topping,0.5
-2,Bubble,topping,0.5
-3,Mango Jelly,topping,0.5
-4,Aloe Jelly,topping,0.75
-5,Nata Jelly,topping,0.5
-6,Herbal Jelly,topping,0.5
-7,Purple Yam,topping,0.75
-8,Milk Cap,topping,1
-9,Berry Crystal Bubble,topping,0.75
-10,KF Black Tea_M,classic,4
-11,KF Black Tea_L,classic,4
-12,KF Green Tea_M,classic,4
-13,KF Green Tea_L,classic,4
-14,KF Oolong Tea_M,classic,4
-15,KF Oolong Tea_L,classic,4
-16,KF Honey Tea_M,classic,4
-17,KF Honey Tea_L,classic,4.25
-18,Longan Jujube Tea_M,classic,4
-19,Longan Jujube Tea_L,classic,4.25
-20,Winter Melon Green Tea_M,classic,4
-21,Winter Melon Green Tea_L,classic,4.25
-22,Brown Sugar Ginger_M,classic,4
-23,Brown Sugar Ginger_L,classic,4.25
-24,Coffee_M,espresso,4.25
-25,Coffee_L,espresso,4.5
-26,Macchiato_M,espresso,4.25
-27,Macchiato_L,espresso,4.5
-28,Mocha_M,espresso,4.25
-29,Mocha_L,espresso,4.5
-30,Latte_M,espresso,4.25
-31,Latte_L,espresso,4.5
-32,Coffee Wow Milk Cap_M,espresso,4.25
-33,Coffee Wow Milk Cap_L,espresso,4.5
-34,Pumpkin Coffee_M,espresso,4.25
-35,Pumpkin Coffee_L,espresso,4.5
-36,Cappuccino_M,espresso,4.25
-37,Cappuccino_L,espresso,4.5
-38,Pistachio Latte_M,espresso,4.25
-39,Pistachio Latte_L,espresso,4.5
-40,S'mores Coffee Slush_M,espresso,4.25
-41,S'mores Coffee Slush_L,espresso,4.5
-42,KF Milk Tea_M,milk tea,4.5
-43,KF Milk Tea_L,milk tea,6
-44,Strawberry Milk Tea_M,milk tea,4.5
-45,Strawberry Milk Tea_L,milk tea,6
-46,Peach Milk Tea_M,milk tea,4.5
-47,Peach Milk Tea_L,milk tea,6
-48,Mango Milk Tea_M,milk tea,4.5
-49,Mango Milk Tea_L,milk tea,6
-50,Roasted Chestnut Milk Tea_M,milk tea,4.5
-51,Roasted Chestnut Milk Tea_L,milk tea,6
-52,KF Milk Green Tea_M,milk tea,4.5
-53,KF Milk Green Tea_L,milk tea,6
-54,Oolong Milk Tea_M,milk tea,4.5
-55,Oolong Milk Tea_L,milk tea,6
-56,Thai Milk Tea_M,milk tea,4.5
-57,Thai Milk Tea_L,milk tea,6
-58,Coffee Milk Tea_M,milk tea,4.5
-59,Coffee Milk Tea_L,milk tea,6
-60,Taro Milk Tea_M,milk tea,4.5
-61,Taro Milk Tea_L,milk tea,6
-62,Taro Milk Green Tea_M,milk tea,4.5
-63,Taro Milk Green Tea_L,milk tea,6
-64,Coconut Milk Tea_M,milk tea,4.5
-65,Coconut Milk Tea_L,milk tea,6
-66,Almond Milk Tea_M,milk tea,4.5
-67,Almond Milk Tea_L,milk tea,6
-68,Winter Melon Milk Green Tea_M,milk tea,4.5
-69,Winter Melon Milk Green Tea_L,milk tea,6
-70,Honey Milk Tea_M,milk tea,4.5
-71,Honey Milk Tea_L,milk tea,6
-72,Honey Milk Green Tea_M,milk tea,4.5
-73,Honey Milk Green Tea_L,milk tea,6
-74,Honey Oolong Milk Tea_M,milk tea,4.5
-75,Honey Oolong Milk Tea_L,milk tea,6
-76,Rosehip Milk Tea_M,milk tea,4.5
-77,Rosehip Milk Tea_L,milk tea,6
-78,Pistachio Milk Tea_M,milk tea,4.5
-79,Pistachio Milk Tea_L,milk tea,6
-80,Roasted Chestnut Slush_M,slush,4.5
-81,Roasted Chestnut Slush_L,slush,5.5
-82,Taro Slush_M,slush,4.5
-83,Taro Slush_L,slush,5.5
-84,Boosted Guava Mango Slush_M,slush,4.5
-85,Boosted Guava Mango Slush_L,slush,6
-86,Blueberry Creamsicle_M,slush,4.5
-87,Blueberry Creamsicle_L,slush,5.5
-88,Red Bean Slush_M,slush,4.5
-89,Red Bean Slush_L,slush,5.5
-90,Matcha Red Bean Slush_M,slush,4.5
-91,Matcha Red Bean Slush_L,slush,5.5
-92,Fruity Flurry_M,slush,4.5
-93,Fruity Flurry_L,slush,6
-94,Mango Slush_M,slush,4.5
-95,Mango Slush_L,slush,5.5
-96,Cocoa Lava Slush_M,slush,4.5
-97,Cocoa Lava Slush_L,slush,5.5
-98,Pineapple Slush_M,slush,4.5
-99,Pineapple Slush_L,slush,5.5
-100,Passion Fruit Slush_M,slush,4.5
-101,Passion Fruit Slush_L,slush,6
-102,Strawberry Milk Slush_M,slush,4.5
-103,Strawberry Milk Slush_L,slush,5.5
-104,Honey Guava Slush_M,slush,4.5
-105,Honey Guava Slush_L,slush,5.5
-106,Coffee Slush_M,slush,4.5
-107,Coffee Slush_L,slush,5.5
-108,Mocha Slush_M,slush,4.5
-109,Mocha Slush_L,slush,6
-110,Kiwi Yogurt Slush_M,slush,4.5
-111,Kiwi Yogurt Slush_L,slush,5.5
-112,Caramel Macchiato Slush_M,slush,4.5
-113,Caramel Macchiato Slush_L,slush,5.5
-114,Pina Colada Slush_M,slush,4.5
-115,Pina Colada Slush_L,slush,5.5
-116,Mango Snow_M,slush,4.5
-117,Mango Snow_L,slush,6
-118,Caribbean Breeze_M,slush,4.5
-119,Caribbean Breeze_L,slush,5.5
-120,Sesame Slush_M,slush,4.5
-121,Sesame Slush_L,slush,5.5
-122,Oreo Slush_M,slush,4.5
-123,Oreo Slush_L,slush,5.5
-124,White Grape Slush_M,slush,4.5
-125,White Grape Slush_L,slush,5.5
-126,Pistachio Almond Slush_M,slush,4.5
-127,Pistachio Almond Slush_L,slush,5.5
-128,Yogurt Orange Juice_M,yogurt,4.5
-129,Yogurt Orange Juice_L,yogurt,6
-130,Yogurt Grapefruit Juice_M,yogurt,4.5
-131,Yogurt Grapefruit Juice_L,yogurt,6
-132,Yogurt Green Tea_M,yogurt,4.5
-133,Yogurt Green Tea_L,yogurt,6
-134,Yogurt Strawberry Lemonade_M,yogurt,4.5
-135,Yogurt Strawberry Lemonade_L,yogurt,6
-136,Yogurt Lemonade_M,yogurt,4.5
-137,Yogurt Lemonade_L,yogurt,6
-138,Yogurt Peach-ade_M,yogurt,4.5
-139,Yogurt Peach-ade_L,yogurt,6
-140,Black Tea Wow Milk Cap_M,milk cap,4.5
-141,Black Tea Wow Milk Cap_L,milk cap,6
-142,Winter Melon Tea Cap_M,milk cap,4.5
-143,Winter Melon Tea Cap_L,milk cap,6
-144,Honey Black Tea Cap_M,milk cap,4.5
-145,Honey Black Tea Cap_L,milk cap,6
-146,Honey Green Tea Cap_M,milk cap,4.5
-147,Honey Green Tea Cap_L,milk cap,6
-148,Honey Oolong Tea Cap_M,milk cap,4.5
-149,Honey Oolong Tea Cap_L,milk cap,6
-150,Sunshine Pineapple TeaCap_M,milk cap,4.5
-151,Sunshine Pineapple TeaCap_L,milk cap,6
-152,Green Tea Wow Milk Cap_M,milk cap,4.5
-153,Green Tea Wow Milk Cap_L,milk cap,6
-154,Matcha Milk Cap_M,milk cap,4.5
-155,Matcha Milk Cap_L,milk cap,6
-156,Cocoa Cream Wow Milk Cap_M,milk cap,4.5
-157,Cocoa Cream Wow Milk Cap_L,milk cap,6
-158,Oolong Tea Wow Milk Cap_M,milk cap,4.5
-159,Oolong Tea Wow Milk Cap_L,milk cap,6
-160,Pikmin Tropical Punch_M,punch,4.5
-161,Pikmin Tropical Punch_L,punch,6
-162,Mango Green Tea_M,punch,4.5
-163,Mango Green Tea_L,punch,6
-164,Peach Oolong Tea_M,punch,4.5
-165,Peach Oolong Tea_L,punch,6
-166,Orange Green Tea_M,punch,4.5
-167,Orange Green Tea_L,punch,6
-168,Guava Black Tea_M,punch,4.5
-169,Guava Black Tea_L,punch,6
-170,Guava Punch_M,punch,4.5
-171,Guava Punch_L,punch,6
-172,Grapefruit Green Tea_M,punch,4.5
-173,Grapefruit Green Tea_L,punch,6
-174,Sunshine Pineapple Tea_M,punch,4.5
-175,Sunshine Pineapple Tea_L,punch,6
-176,Kiwi Punch_M,punch,4.5
-177,Kiwi Punch_L,punch,6
-178,Strawberry Lemonade_M,punch,4.5
-179,Strawberry Lemonade_L,punch,6
-180,Strawberry Lemon Green Tea_M,punch,4.5
-181,Strawberry Lemon Green Tea_L,punch,6
-182,Passion Fruit Green Tea_M,punch,4.5
-183,Passion Fruit Green Tea_L,punch,6
-184,Lychee Black Tea_M,punch,4.5
-185,Lychee Black Tea_L,punch,6
-186,Rosehip Lemonade_M,punch,4.5
-187,Rosehip Lemonade_L,punch,6
-188,Winter Melon Lemonade_M,punch,4.5
-189,Winter Melon Lemonade_L,punch,6
-190,White Grape Punch_M,punch,4.5
-191,White Grape Punch_L,punch,6
-192,Sunshine Grape-ade_M,punch,4.5
-193,Sunshine Grape-ade_L,punch,6
-194,Cocoa Green/Original Wow_M,milk strike,4.5
-195,Cocoa Green/Original Wow_L,milk strike,6
-196,Matcha Milk_M,milk strike,4.5
-197,Matcha Milk_L,milk strike,6
-198,Winter Melon Milk_M,milk strike,4.5
-199,Winter Melon Milk_L,milk strike,6
-200,Sesame Matcha Milk_M,milk strike,4.5
-201,Sesame Matcha Milk_L,milk strike,6
-202,Chai Milk_M,milk strike,4.5
-203,Chai Milk_L,milk strike,6
-204,Ginger Milk_M,milk strike,4.5
-205,Ginger Milk_L,milk strike,6
-206,Pumpkin Spice Latte_M,milk strike,4.5
-207,Pumpkin Spice Latte_L,milk strike,6
-208,Oreo Wow_M,milk strike,4.5
-209,Oreo Wow_L,milk strike,6
-210,Red Bean Wow_M,milk strike,4.5
-211,Red Bean Wow_L,milk strike,6
-212,Cocoa_M,milk strike,4.5
-213,Cocoa_L,milk strike,6
-214,Peach Milk Tea_M,what's new,4.5
-215,Peach Milk Tea_L,what's new,6
-216,Pikmin Tropical Slush_M,what's new,4.5
-217,Pikmin Tropical Slush_L,what's new,6
-218,Mango Milk Tea_M,what's new,4.5
-219,Mango Milk Tea_L,what's new,6
-220,Coffee Wow Milk Cap_M,what's new,4.5
-221,Coffee Wow Milk Cap_L,what's new,6
-222,Pikmin Tropical Punch_M,what's new,4.5
-223,Pikmin Tropical Punch_L,what's new,6
-224,Strawberry Milk Tea_M,what's new,4.5
-225,Strawberry Milk Tea_L,what's new,6
-226,Black Tea Wow Milk Cap_M,what's new,4.5
-227,Black Tea Wow Milk Cap_L,what's new,6
-228,Spirit Spooky Slush_M,what's new,4.5
-229,Spirit Spooky Slush_L,what's new,6
-230,Green Tea Wow Milk Cap_M,what's new,4.5
-231,Green Tea Wow Milk Cap_L,what's new,6
-232,Pumpkin Slush_M,what's new,4.5
-233,Pumpkin Slush_L,what's new,6
-234,Pumpkin Spice Latte_M,what's new,4.5
-235,Pumpkin Spice Latte_L,what's new,6
-236,Pistachio Latte_M,what's new,4.5
-237,Pistachio Latte_L,what's new,6
-238,Kiwi Punch_M,what's new,4.5
-239,Kiwi Punch_L,what's new,6
-240,Passion Fruit Swirl_M,what's new,4.5
-241,Passion Fruit Swirl_L,what's new,6
-242,Oolong Tea Wow Milk Cap_M,what's new,4.5
-243,Oolong Tea Wow Milk Cap_L,what's new,6
-244,S'mores Slush_M,what's new,4.5
-245,S'mores Slush_L,what's new,6
-246,Strawberry Cream_M,what's new,4.5
-247,Strawberry Cream_L,what's new,6
-248,Pistachio Milk Tea_M,what's new,4.5
-249,Pistachio Milk Tea_L,what's new,6
-250,Pistachio Almond Slush_M,what's new,4.5
-251,Pistachio Almond Slush_L,what's new,6
-252,Yellow Kung Fu Tea Hat,merchandise,29.99
-253,Black Kung Fu Tea Hat,merchandise,29.99
-254,Blue Kung Fu Tea Hat,merchandise,29.99
-255,Pink Kung Fu Tea Hat,merchandise,29.99
-256,Kung Fu Tea Magnet Set,merchandise,18
-257,The Emoji Mug,merchandise,20
-258,The Emoji Tumbler,merchandise,20
-259,Essential Bundle,merchandise,63.9
+menuid,inventoryid,name,category,price
+1,1,Brown Sugar Wow,topping,0.5
+2,2,Bubble,topping,0.5
+3,3,Mango Jelly,topping,0.5
+4,4,Aloe Jelly,topping,0.75
+5,5,Nata Jelly,topping,0.5
+6,6,Herbal Jelly,topping,0.5
+7,7,Purple Yam,topping,0.75
+8,8,Milk Cap,topping,1
+9,9,Berry Crystal Bubble,topping,0.75
+10,10,KF Black Tea_M,classic,4
+11,10,KF Black Tea_L,classic,4
+12,11,KF Green Tea_M,classic,4
+13,11,KF Green Tea_L,classic,4
+14,12,KF Oolong Tea_M,classic,4
+15,12,KF Oolong Tea_L,classic,4
+16,13,KF Honey Tea_M,classic,4
+17,13,KF Honey Tea_L,classic,4.25
+18,14,Longan Jujube Tea_M,classic,4
+19,14,Longan Jujube Tea_L,classic,4.25
+20,15,Winter Melon Green Tea_M,classic,4
+21,15,Winter Melon Green Tea_L,classic,4.25
+22,16,Brown Sugar Ginger_M,classic,4
+23,16,Brown Sugar Ginger_L,classic,4.25
+24,17,Coffee_M,espresso,4.25
+25,17,Coffee_L,espresso,4.5
+26,18,Macchiato_M,espresso,4.25
+27,18,Macchiato_L,espresso,4.5
+28,19,Mocha_M,espresso,4.25
+29,19,Mocha_L,espresso,4.5
+30,20,Latte_M,espresso,4.25
+31,20,Latte_L,espresso,4.5
+32,21,Coffee Wow Milk Cap_M,espresso,4.25
+33,21,Coffee Wow Milk Cap_L,espresso,4.5
+34,22,Pumpkin Coffee_M,espresso,4.25
+35,22,Pumpkin Coffee_L,espresso,4.5
+36,23,Cappuccino_M,espresso,4.25
+37,23,Cappuccino_L,espresso,4.5
+38,24,Pistachio Latte_M,espresso,4.25
+39,24,Pistachio Latte_L,espresso,4.5
+40,25,S'mores Coffee Slush_M,espresso,4.25
+41,25,S'mores Coffee Slush_L,espresso,4.5
+42,26,KF Milk Tea_M,milk tea,4.5
+43,26,KF Milk Tea_L,milk tea,6
+44,27,Strawberry Milk Tea_M,milk tea,4.5
+45,27,Strawberry Milk Tea_L,milk tea,6
+46,28,Peach Milk Tea_M,milk tea,4.5
+47,28,Peach Milk Tea_L,milk tea,6
+48,29,Mango Milk Tea_M,milk tea,4.5
+49,29,Mango Milk Tea_L,milk tea,6
+50,30,Roasted Chestnut Milk Tea_M,milk tea,4.5
+51,30,Roasted Chestnut Milk Tea_L,milk tea,6
+52,31,KF Milk Green Tea_M,milk tea,4.5
+53,31,KF Milk Green Tea_L,milk tea,6
+54,32,Oolong Milk Tea_M,milk tea,4.5
+55,32,Oolong Milk Tea_L,milk tea,6
+56,33,Thai Milk Tea_M,milk tea,4.5
+57,33,Thai Milk Tea_L,milk tea,6
+58,34,Coffee Milk Tea_M,milk tea,4.5
+59,34,Coffee Milk Tea_L,milk tea,6
+60,35,Taro Milk Tea_M,milk tea,4.5
+61,35,Taro Milk Tea_L,milk tea,6
+62,36,Taro Milk Green Tea_M,milk tea,4.5
+63,36,Taro Milk Green Tea_L,milk tea,6
+64,37,Coconut Milk Tea_M,milk tea,4.5
+65,37,Coconut Milk Tea_L,milk tea,6
+66,38,Almond Milk Tea_M,milk tea,4.5
+67,38,Almond Milk Tea_L,milk tea,6
+68,39,Winter Melon Milk Green Tea_M,milk tea,4.5
+69,39,Winter Melon Milk Green Tea_L,milk tea,6
+70,40,Honey Milk Tea_M,milk tea,4.5
+71,40,Honey Milk Tea_L,milk tea,6
+72,41,Honey Milk Green Tea_M,milk tea,4.5
+73,41,Honey Milk Green Tea_L,milk tea,6
+74,42,Honey Oolong Milk Tea_M,milk tea,4.5
+75,42,Honey Oolong Milk Tea_L,milk tea,6
+76,43,Rosehip Milk Tea_M,milk tea,4.5
+77,43,Rosehip Milk Tea_L,milk tea,6
+78,44,Pistachio Milk Tea_M,milk tea,4.5
+79,44,Pistachio Milk Tea_L,milk tea,6
+80,45,Roasted Chestnut Slush_M,slush,4.5
+81,45,Roasted Chestnut Slush_L,slush,5.5
+82,46,Taro Slush_M,slush,4.5
+83,46,Taro Slush_L,slush,5.5
+84,47,Boosted Guava Mango Slush_M,slush,4.5
+85,47,Boosted Guava Mango Slush_L,slush,6
+86,48,Blueberry Creamsicle_M,slush,4.5
+87,48,Blueberry Creamsicle_L,slush,5.5
+88,49,Red Bean Slush_M,slush,4.5
+89,49,Red Bean Slush_L,slush,5.5
+90,50,Matcha Red Bean Slush_M,slush,4.5
+91,50,Matcha Red Bean Slush_L,slush,5.5
+92,51,Fruity Flurry_M,slush,4.5
+93,51,Fruity Flurry_L,slush,6
+94,52,Mango Slush_M,slush,4.5
+95,52,Mango Slush_L,slush,5.5
+96,53,Cocoa Lava Slush_M,slush,4.5
+97,53,Cocoa Lava Slush_L,slush,5.5
+98,54,Pineapple Slush_M,slush,4.5
+99,54,Pineapple Slush_L,slush,5.5
+100,55,Passion Fruit Slush_M,slush,4.5
+101,55,Passion Fruit Slush_L,slush,6
+102,56,Strawberry Milk Slush_M,slush,4.5
+103,56,Strawberry Milk Slush_L,slush,5.5
+104,57,Honey Guava Slush_M,slush,4.5
+105,57,Honey Guava Slush_L,slush,5.5
+106,58,Coffee Slush_M,slush,4.5
+107,58,Coffee Slush_L,slush,5.5
+108,59,Mocha Slush_M,slush,4.5
+109,59,Mocha Slush_L,slush,6
+110,60,Kiwi Yogurt Slush_M,slush,4.5
+111,60,Kiwi Yogurt Slush_L,slush,5.5
+112,61,Caramel Macchiato Slush_M,slush,4.5
+113,61,Caramel Macchiato Slush_L,slush,5.5
+114,62,Pina Colada Slush_M,slush,4.5
+115,62,Pina Colada Slush_L,slush,5.5
+116,63,Mango Snow_M,slush,4.5
+117,63,Mango Snow_L,slush,6
+118,64,Caribbean Breeze_M,slush,4.5
+119,64,Caribbean Breeze_L,slush,5.5
+120,65,Sesame Slush_M,slush,4.5
+121,65,Sesame Slush_L,slush,5.5
+122,66,Oreo Slush_M,slush,4.5
+123,66,Oreo Slush_L,slush,5.5
+124,67,White Grape Slush_M,slush,4.5
+125,67,White Grape Slush_L,slush,5.5
+126,68,Pistachio Almond Slush_M,slush,4.5
+127,68,Pistachio Almond Slush_L,slush,5.5
+128,69,Yogurt Orange Juice_M,yogurt,4.5
+129,69,Yogurt Orange Juice_L,yogurt,6
+130,70,Yogurt Grapefruit Juice_M,yogurt,4.5
+131,70,Yogurt Grapefruit Juice_L,yogurt,6
+132,71,Yogurt Green Tea_M,yogurt,4.5
+133,71,Yogurt Green Tea_L,yogurt,6
+134,72,Yogurt Strawberry Lemonade_M,yogurt,4.5
+135,72,Yogurt Strawberry Lemonade_L,yogurt,6
+136,73,Yogurt Lemonade_M,yogurt,4.5
+137,73,Yogurt Lemonade_L,yogurt,6
+138,74,Yogurt Peach-ade_M,yogurt,4.5
+139,74,Yogurt Peach-ade_L,yogurt,6
+140,75,Black Tea Wow Milk Cap_M,milk cap,4.5
+141,75,Black Tea Wow Milk Cap_L,milk cap,6
+142,76,Winter Melon Tea Cap_M,milk cap,4.5
+143,76,Winter Melon Tea Cap_L,milk cap,6
+144,77,Honey Black Tea Cap_M,milk cap,4.5
+145,77,Honey Black Tea Cap_L,milk cap,6
+146,78,Honey Green Tea Cap_M,milk cap,4.5
+147,78,Honey Green Tea Cap_L,milk cap,6
+148,79,Honey Oolong Tea Cap_M,milk cap,4.5
+149,79,Honey Oolong Tea Cap_L,milk cap,6
+150,80,Sunshine Pineapple TeaCap_M,milk cap,4.5
+151,80,Sunshine Pineapple TeaCap_L,milk cap,6
+152,81,Green Tea Wow Milk Cap_M,milk cap,4.5
+153,81,Green Tea Wow Milk Cap_L,milk cap,6
+154,82,Matcha Milk Cap_M,milk cap,4.5
+155,82,Matcha Milk Cap_L,milk cap,6
+156,83,Cocoa Cream Wow Milk Cap_M,milk cap,4.5
+157,83,Cocoa Cream Wow Milk Cap_L,milk cap,6
+158,84,Oolong Tea Wow Milk Cap_M,milk cap,4.5
+159,84,Oolong Tea Wow Milk Cap_L,milk cap,6
+160,85,Pikmin Tropical Punch_M,punch,4.5
+161,85,Pikmin Tropical Punch_L,punch,6
+162,86,Mango Green Tea_M,punch,4.5
+163,86,Mango Green Tea_L,punch,6
+164,87,Peach Oolong Tea_M,punch,4.5
+165,87,Peach Oolong Tea_L,punch,6
+166,88,Orange Green Tea_M,punch,4.5
+167,88,Orange Green Tea_L,punch,6
+168,89,Guava Black Tea_M,punch,4.5
+169,89,Guava Black Tea_L,punch,6
+170,90,Guava Punch_M,punch,4.5
+171,90,Guava Punch_L,punch,6
+172,91,Grapefruit Green Tea_M,punch,4.5
+173,91,Grapefruit Green Tea_L,punch,6
+174,92,Sunshine Pineapple Tea_M,punch,4.5
+175,92,Sunshine Pineapple Tea_L,punch,6
+176,93,Kiwi Punch_M,punch,4.5
+177,93,Kiwi Punch_L,punch,6
+178,94,Strawberry Lemonade_M,punch,4.5
+179,94,Strawberry Lemonade_L,punch,6
+180,95,Strawberry Lemon Green Tea_M,punch,4.5
+181,95,Strawberry Lemon Green Tea_L,punch,6
+182,96,Passion Fruit Green Tea_M,punch,4.5
+183,96,Passion Fruit Green Tea_L,punch,6
+184,97,Lychee Black Tea_M,punch,4.5
+185,97,Lychee Black Tea_L,punch,6
+186,98,Rosehip Lemonade_M,punch,4.5
+187,98,Rosehip Lemonade_L,punch,6
+188,99,Winter Melon Lemonade_M,punch,4.5
+189,99,Winter Melon Lemonade_L,punch,6
+190,100,White Grape Punch_M,punch,4.5
+191,100,White Grape Punch_L,punch,6
+192,101,Sunshine Grape-ade_M,punch,4.5
+193,101,Sunshine Grape-ade_L,punch,6
+194,102,Cocoa Green/Original Wow_M,milk strike,4.5
+195,102,Cocoa Green/Original Wow_L,milk strike,6
+196,103,Matcha Milk_M,milk strike,4.5
+197,103,Matcha Milk_L,milk strike,6
+198,104,Winter Melon Milk_M,milk strike,4.5
+199,104,Winter Melon Milk_L,milk strike,6
+200,105,Sesame Matcha Milk_M,milk strike,4.5
+201,105,Sesame Matcha Milk_L,milk strike,6
+202,106,Chai Milk_M,milk strike,4.5
+203,106,Chai Milk_L,milk strike,6
+204,107,Ginger Milk_M,milk strike,4.5
+205,107,Ginger Milk_L,milk strike,6
+206,108,Pumpkin Spice Latte_M,milk strike,4.5
+207,108,Pumpkin Spice Latte_L,milk strike,6
+208,109,Oreo Wow_M,milk strike,4.5
+209,109,Oreo Wow_L,milk strike,6
+210,110,Red Bean Wow_M,milk strike,4.5
+211,110,Red Bean Wow_L,milk strike,6
+212,111,Cocoa_M,milk strike,4.5
+213,111,Cocoa_L,milk strike,6
+214,28,Peach Milk Tea_M,what's new,4.5
+215,28,Peach Milk Tea_L,what's new,6
+216,112,Pikmin Tropical Slush_M,what's new,4.5
+217,112,Pikmin Tropical Slush_L,what's new,6
+218,29,Mango Milk Tea_M,what's new,4.5
+219,29,Mango Milk Tea_L,what's new,6
+220,21,Coffee Wow Milk Cap_M,what's new,4.5
+221,21,Coffee Wow Milk Cap_L,what's new,6
+222,85,Pikmin Tropical Punch_M,what's new,4.5
+223,85,Pikmin Tropical Punch_L,what's new,6
+224,27,Strawberry Milk Tea_M,what's new,4.5
+225,27,Strawberry Milk Tea_L,what's new,6
+226,75,Black Tea Wow Milk Cap_M,what's new,4.5
+227,75,Black Tea Wow Milk Cap_L,what's new,6
+228,113,Spirit Spooky Slush_M,what's new,4.5
+229,113,Spirit Spooky Slush_L,what's new,6
+230,81,Green Tea Wow Milk Cap_M,what's new,4.5
+231,81,Green Tea Wow Milk Cap_L,what's new,6
+232,114,Pumpkin Slush_M,what's new,4.5
+233,114,Pumpkin Slush_L,what's new,6
+234,108,Pumpkin Spice Latte_M,what's new,4.5
+235,108,Pumpkin Spice Latte_L,what's new,6
+236,24,Pistachio Latte_M,what's new,4.5
+237,24,Pistachio Latte_L,what's new,6
+238,93,Kiwi Punch_M,what's new,4.5
+239,93,Kiwi Punch_L,what's new,6
+240,115,Passion Fruit Swirl_M,what's new,4.5
+241,115,Passion Fruit Swirl_L,what's new,6
+242,84,Oolong Tea Wow Milk Cap_M,what's new,4.5
+243,84,Oolong Tea Wow Milk Cap_L,what's new,6
+244,116,S'mores Slush_M,what's new,4.5
+245,116,S'mores Slush_L,what's new,6
+246,117,Strawberry Cream_M,what's new,4.5
+247,117,Strawberry Cream_L,what's new,6
+248,44,Pistachio Milk Tea_M,what's new,4.5
+249,44,Pistachio Milk Tea_L,what's new,6
+250,68,Pistachio Almond Slush_M,what's new,4.5
+251,68,Pistachio Almond Slush_L,what's new,6
+252,118,Yellow Kung Fu Tea Hat,merchandise,29.99
+253,119,Black Kung Fu Tea Hat,merchandise,29.99
+254,120,Blue Kung Fu Tea Hat,merchandise,29.99
+255,121,Pink Kung Fu Tea Hat,merchandise,29.99
+256,122,Kung Fu Tea Magnet Set,merchandise,18
+257,123,The Emoji Mug,merchandise,20
+258,124,The Emoji Tumbler,merchandise,20
+259,125,Essential Bundle,merchandise,63.9
