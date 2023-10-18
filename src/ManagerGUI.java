@@ -147,10 +147,6 @@ public class ManagerGUI {
                             newMaxDate = sdf.format(curDateConverted);
                     }
 
-                    System.out.println(String.format("SELECT * " +
-                            "FROM order_log " +
-                            "WHERE date >= \'%s\' AND date <= \'%s\';", currentDate, newMaxDate));
-
                     // Update data.
                     ResultSet newData = handler.requestData
                             (String.format("SELECT * FROM order_log WHERE date >= \'%s\' AND date <= \'%s\';", currentDate, newMaxDate));
@@ -214,7 +210,6 @@ public class ManagerGUI {
             @Override
             public void handle(ActionEvent actionEvent) {
                 ObservableList<String> names = createAllDrinks(statBox, combobox.getValue().toString());
-                //System.out.println("Names" + names);
                 changeList(names);
             }
         });
@@ -361,7 +356,6 @@ public class ManagerGUI {
     }
   
     private ObservableList<String> createAllDrinks(VBox menuVBox, String category) {
-        //System.out.println("Adding all drinks from " + category);
         menuVBox.getChildren().removeIf(node -> node instanceof HBox);
         dbConnectionHandler handler = new dbConnectionHandler();
         category = category.replace("'", "''");
@@ -589,7 +583,6 @@ public class ManagerGUI {
 
                     // Getting Jaejin's result.
                     tableLabel.setText("Items on Excess for " + currentDate);
-                    System.out.println("Items on Excess for " + currentDate);
                     table.getItems().clear();
                     excessQuery = String.format("select t12.name from (select t1.name from (select drink.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid where date between '%s' and localtimestamp group by drink.name having count(*) < 0.1 * (select quantity from inventory where name = drink.name)) as t1 union select t2.name from (select topping.name, count(*) from order_log inner join drink on order_log.orderid = drink.orderid inner join topping on drink.drinkid = topping.drinkid where date between '%s' and localtimestamp group by topping.name having count(*) < 0.1 * (select quantity from inventory where name = topping.name)) as t2) as t12 union select t3.name from (select merchandise.name, count(*) from order_log inner join merchandise on order_log.orderid = merchandise.orderid where date between '%s' and localtimestamp group by merchandise.name having count(*) < 0.1 * (select quantity from inventory where name = merchandise.name)) as t3;",
                                     currentDate, currentDate, currentDate);
