@@ -15,6 +15,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -35,13 +36,16 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.util.List;
 import javafx.scene.chart.XYChart;
-
 import java.time.LocalDate;
 import java.time.YearMonth;
-
 import java.sql.*;
 import java.util.stream.Collectors;
 
+/**
+ * ManagerGUI is responsible for creating and managing the main GUI for a Manager's dashboard.
+ * It includes functionalities such as displaying orders data, navigating through a calendar, 
+ * and handling inventory requests.
+ */
 public class ManagerGUI {
     Stage primaryStage;
     private YearMonth currentYearMonth;
@@ -50,6 +54,11 @@ public class ManagerGUI {
     ListView<String> lv = new ListView<String>();
     dbConnectionHandler handler = new dbConnectionHandler();
 
+    /**
+     * Constructs a ManagerGUI object with a connection to the database.
+     *
+     * @param handler The database connection handler to be used for querying data.
+     */
     ManagerGUI(dbConnectionHandler handler) {
         currentYearMonth = YearMonth.now();
         data = FXCollections.observableArrayList();
@@ -108,6 +117,13 @@ public class ManagerGUI {
         sp.setMaxHeight(600);
         sp.setMinWidth(350);    
         VBox menuVBox = new VBox();
+        Button restockReportBtn = new Button("Restock Report");
+        menuVBox.getChildren().add(restockReportBtn);
+        restockReportBtn.setOnAction(event -> {
+            generateRestockReport(handler);
+        });
+        sp.setContent(menuVBox);
+
         menuVBox.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         HBox.setHgrow(menuVBox, Priority.ALWAYS);
         sp.setContent(listBox);
@@ -164,9 +180,22 @@ public class ManagerGUI {
         Scene primaryScene = new Scene(primaryGP);
         primaryStage.setScene(primaryScene);
         primaryStage.show();
-
     }
 
+     private void generateRestockReport(dbConnectionHandler handler) {
+        // Create a new stage for the popup
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Restock Report");
+
+        TableView table = createInventoryTable(handler); 
+        VBox layout = new VBox(10);
+        layout.getChildren().add(table);
+
+        Scene scene = new Scene(layout, 300, 250); 
+        popupStage.setScene(scene);
+        popupStage.showAndWait(); 
+    }
     private void changeList(ObservableList<String> nms){
         lv.setItems(nms);
     }
@@ -203,6 +232,41 @@ public class ManagerGUI {
             showAndThrowError("Unexpected error occured when reading data.\n" + e.getMessage());
         }
         combobox.setPromptText("-- Select --");
+    }
+    
+    private TableView createInventoryTable(dbConnectionHandler handler) {
+        TableView table = new TableView();
+        table.setEditable(true);
+
+        try {
+            ResultSet rs = handler.requestData("SELECT inventoryid, name, quantity, required_quantity\r\n" + //
+                    "FROM inventory\r\n" + //
+                    "WHERE quantity < required_quantity;");
+
+            // Dynamically setting the table columns according to the data
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                final int j = i;
+                TableColumn<ObservableList<String>, String> col = new TableColumn<>(rs.getMetaData().getColumnName(i + 1));
+                col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
+                table.getColumns().add(col);
+            }
+
+            // Fetching rows from the ResultSet and adding to the table
+            while (rs.next()) {
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    row.add(rs.getString(i));
+                }
+                table.getItems().add(row);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN); // This makes the table only as wide as necessary.
+
+        return table;
     }
 
 //    private void populateCategories() {
@@ -318,6 +382,11 @@ public class ManagerGUI {
         ll.getData().add(series);
     }
 
+    /**
+     * Displays an error message in an alert dialog and terminates the application.
+     *
+     * @param message The error message to display.
+     */
     private void showAndThrowError(String Message) {
         Alert failedConnection = new Alert(Alert.AlertType.ERROR);
         failedConnection.setTitle("Connection Error");
@@ -327,6 +396,11 @@ public class ManagerGUI {
         System.exit(1);
     }
 
+     /**
+     * Fills the calendar grid with appropriate day labels and buttons corresponding to the days.
+     *
+     * @param gridPane The GridPane representing the calendar.
+     */
     private void populateCalendar(GridPane gridPane) {
         LocalDate startDate = currentYearMonth.atDay(1);
         int daysInMonth = currentYearMonth.lengthOfMonth();
@@ -360,6 +434,12 @@ public class ManagerGUI {
         }
     }
 
+    /**
+     * Updates the calendar displayed to the user, shifting the months shown.
+     *
+     * @param monthOffset A positive or negative number indicating how many months to move forward or backward.
+     * @param gridPane    The GridPane representing the calendar.
+     */
     private void updateManagerGUI(int monthOffset, GridPane gridPane) {
         currentYearMonth = currentYearMonth.plusMonths(monthOffset);
 
@@ -379,18 +459,26 @@ public class ManagerGUI {
         gridPane.add(new Label(currentYearMonth.toString()), 1, 0);
         gridPane.add(nextButton, 2, 0);
 
-
         // Repopulate the calendar for the new month
         populateCalendar(gridPane);
     }
 }
 
+/**
+ * InventoryRequestSection is a UI component allowing managers to request inventory items.
+ * It contains fields for item details and a submission button to process the request.
+ */
 class InventoryRequestSection extends VBox {
     private TextField itemNameField;
     private TextField quantityField;
     private Button submitButton;
     private dbConnectionHandler handler;
 
+    /**
+     * Constructs an InventoryRequestSection with the necessary UI components and a link to the database.
+     *
+     * @param handler The database connection handler for processing inventory requests.
+     */
     public InventoryRequestSection(dbConnectionHandler handler) {
         this.handler = handler;
 
@@ -408,6 +496,9 @@ class InventoryRequestSection extends VBox {
         getChildren().addAll(titleLabel, itemNameField, quantityField, submitButton);
     }
 
+    /**
+     * Handles the submission of an inventory request, input validation, and database insertion.
+     */
     private void submitRequest() {
         String itemName = itemNameField.getText().trim();
         int quantity;
@@ -428,6 +519,11 @@ class InventoryRequestSection extends VBox {
         showInfo("Inventory request added successfully!");
     }
 
+    /**
+     * Displays an error message in an alert dialog to the user.
+     *
+     * @param message The error message to display.
+     */
     private void showAndThrowError(String message) {
         Alert failedInput = new Alert(Alert.AlertType.ERROR);
         failedInput.setTitle("Input Error");
@@ -436,6 +532,11 @@ class InventoryRequestSection extends VBox {
         failedInput.showAndWait();
     }
 
+    /**
+     * Displays an information alert dialog to the user.
+     *
+     * @param message The information message to display.
+     */
     private void showInfo(String message) {
         Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
         infoAlert.setTitle("Info");
