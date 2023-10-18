@@ -212,49 +212,49 @@ menuid,inventoryid,name,category,price
 211,110,Red Bean Wow_L,milk strike,6
 212,111,Cocoa_M,milk strike,4.5
 213,111,Cocoa_L,milk strike,6
-214,112,Peach Milk Tea_M,what's new,4.5
-215,112,Peach Milk Tea_L,what's new,6
-216,113,Pikmin Tropical Slush_M,what's new,4.5
-217,113,Pikmin Tropical Slush_L,what's new,6
-218,114,Mango Milk Tea_M,what's new,4.5
-219,114,Mango Milk Tea_L,what's new,6
-220,115,Coffee Wow Milk Cap_M,what's new,4.5
-221,115,Coffee Wow Milk Cap_L,what's new,6
-222,116,Pikmin Tropical Punch_M,what's new,4.5
-223,116,Pikmin Tropical Punch_L,what's new,6
-224,117,Strawberry Milk Tea_M,what's new,4.5
-225,117,Strawberry Milk Tea_L,what's new,6
-226,118,Black Tea Wow Milk Cap_M,what's new,4.5
-227,118,Black Tea Wow Milk Cap_L,what's new,6
-228,119,Spirit Spooky Slush_M,what's new,4.5
-229,119,Spirit Spooky Slush_L,what's new,6
-230,120,Green Tea Wow Milk Cap_M,what's new,4.5
-231,120,Green Tea Wow Milk Cap_L,what's new,6
-232,121,Pumpkin Slush_M,what's new,4.5
-233,121,Pumpkin Slush_L,what's new,6
-234,122,Pumpkin Spice Latte_M,what's new,4.5
-235,122,Pumpkin Spice Latte_L,what's new,6
-236,123,Pistachio Latte_M,what's new,4.5
-237,123,Pistachio Latte_L,what's new,6
-238,124,Kiwi Punch_M,what's new,4.5
-239,124,Kiwi Punch_L,what's new,6
-240,125,Passion Fruit Swirl_M,what's new,4.5
-241,125,Passion Fruit Swirl_L,what's new,6
-242,126,Oolong Tea Wow Milk Cap_M,what's new,4.5
-243,126,Oolong Tea Wow Milk Cap_L,what's new,6
-244,127,S'mores Slush_M,what's new,4.5
-245,127,S'mores Slush_L,what's new,6
-246,128,Strawberry Cream_M,what's new,4.5
-247,128,Strawberry Cream_L,what's new,6
-248,129,Pistachio Milk Tea_M,what's new,4.5
-249,129,Pistachio Milk Tea_L,what's new,6
-250,130,Pistachio Almond Slush_M,what's new,4.5
-251,130,Pistachio Almond Slush_L,what's new,6
-252,131,Yellow Kung Fu Tea Hat,merchandise,29.99
-253,132,Black Kung Fu Tea Hat,merchandise,29.99
-254,133,Blue Kung Fu Tea Hat,merchandise,29.99
-255,134,Pink Kung Fu Tea Hat,merchandise,29.99
-256,135,Kung Fu Tea Magnet Set,merchandise,18
-257,136,The Emoji Mug,merchandise,20
-258,137,The Emoji Tumbler,merchandise,20
-259,138,Essential Bundle,merchandise,63.9
+214,28,Peach Milk Tea_M,what's new,4.5
+215,28,Peach Milk Tea_L,what's new,6
+216,112,Pikmin Tropical Slush_M,what's new,4.5
+217,112,Pikmin Tropical Slush_L,what's new,6
+218,29,Mango Milk Tea_M,what's new,4.5
+219,29,Mango Milk Tea_L,what's new,6
+220,21,Coffee Wow Milk Cap_M,what's new,4.5
+221,21,Coffee Wow Milk Cap_L,what's new,6
+222,85,Pikmin Tropical Punch_M,what's new,4.5
+223,85,Pikmin Tropical Punch_L,what's new,6
+224,27,Strawberry Milk Tea_M,what's new,4.5
+225,27,Strawberry Milk Tea_L,what's new,6
+226,75,Black Tea Wow Milk Cap_M,what's new,4.5
+227,75,Black Tea Wow Milk Cap_L,what's new,6
+228,113,Spirit Spooky Slush_M,what's new,4.5
+229,113,Spirit Spooky Slush_L,what's new,6
+230,81,Green Tea Wow Milk Cap_M,what's new,4.5
+231,81,Green Tea Wow Milk Cap_L,what's new,6
+232,114,Pumpkin Slush_M,what's new,4.5
+233,114,Pumpkin Slush_L,what's new,6
+234,108,Pumpkin Spice Latte_M,what's new,4.5
+235,108,Pumpkin Spice Latte_L,what's new,6
+236,24,Pistachio Latte_M,what's new,4.5
+237,24,Pistachio Latte_L,what's new,6
+238,93,Kiwi Punch_M,what's new,4.5
+239,93,Kiwi Punch_L,what's new,6
+240,115,Passion Fruit Swirl_M,what's new,4.5
+241,115,Passion Fruit Swirl_L,what's new,6
+242,84,Oolong Tea Wow Milk Cap_M,what's new,4.5
+243,84,Oolong Tea Wow Milk Cap_L,what's new,6
+244,116,S'mores Slush_M,what's new,4.5
+245,116,S'mores Slush_L,what's new,6
+246,117,Strawberry Cream_M,what's new,4.5
+247,117,Strawberry Cream_L,what's new,6
+248,44,Pistachio Milk Tea_M,what's new,4.5
+249,44,Pistachio Milk Tea_L,what's new,6
+250,68,Pistachio Almond Slush_M,what's new,4.5
+251,68,Pistachio Almond Slush_L,what's new,6
+252,118,Yellow Kung Fu Tea Hat,merchandise,29.99
+253,119,Black Kung Fu Tea Hat,merchandise,29.99
+254,120,Blue Kung Fu Tea Hat,merchandise,29.99
+255,121,Pink Kung Fu Tea Hat,merchandise,29.99
+256,122,Kung Fu Tea Magnet Set,merchandise,18
+257,123,The Emoji Mug,merchandise,20
+258,124,The Emoji Tumbler,merchandise,20
+259,125,Essential Bundle,merchandise,63.9
