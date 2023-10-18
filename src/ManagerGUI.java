@@ -9,6 +9,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -88,15 +89,25 @@ public class ManagerGUI {
         primaryGP.add(inventoryRequestSection, 0, 2);
 
         // Creating menu
+        VBox mainLayout = new VBox();
+        mainLayout.setSpacing(10); 
         Group menuSection = new Group();
+
         ScrollPane sp = new ScrollPane();
         sp.setPannable(true);
         sp.setFitToWidth(true);
         sp.setMinHeight(600);
         sp.setMaxHeight(600);
         sp.setMinWidth(350);
+
         VBox menuVBox = new VBox();
+        Button restockReportBtn = new Button("Restock Report");
+        menuVBox.getChildren().add(restockReportBtn);
+        restockReportBtn.setOnAction(event -> {
+            generateRestockReport(handler);
+        });
         sp.setContent(menuVBox);
+
         //set other properties
         menuVBox.setMinWidth(350);
         menuVBox.setMaxHeight(600);
@@ -111,14 +122,32 @@ public class ManagerGUI {
             }
         });
 
-        menuSection.getChildren().addAll(menuVBox, sp);
+        mainLayout.getChildren().addAll(menuVBox, sp, restockReportBtn);
+        menuSection.getChildren().addAll(mainLayout);
         primaryGP.add(menuSection, 1, 1);
 
         Scene primaryScene = new Scene(primaryGP);
         primaryStage.setScene(primaryScene);
         primaryStage.show();
-
     }
+
+     private void generateRestockReport(dbConnectionHandler handler) {
+        // Create a new stage for the popup
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Restock Report");
+
+        TableView table = createInventoryTable(handler); 
+        VBox layout = new VBox(10);
+        layout.getChildren().add(table);
+
+        Scene scene = new Scene(layout, 300, 250); 
+        popupStage.setScene(scene);
+        popupStage.showAndWait(); 
+    }
+
+
+
 
 
     private void populateComboBox(ComboBox combobox) {
@@ -135,6 +164,40 @@ public class ManagerGUI {
             showAndThrowError("Unexpected error occured when reading data.\n" + e.getMessage());
         }
         combobox.setPromptText("-- Select --");
+    }
+    private TableView createInventoryTable(dbConnectionHandler handler) {
+        TableView table = new TableView();
+        table.setEditable(true);
+
+        try {
+            ResultSet rs = handler.requestData("SELECT inventoryid, name, quantity, required_quantity\r\n" + //
+                    "FROM inventory\r\n" + //
+                    "WHERE quantity < required_quantity;");
+
+            // Dynamically setting the table columns according to the data
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                final int j = i;
+                TableColumn<ObservableList<String>, String> col = new TableColumn<>(rs.getMetaData().getColumnName(i + 1));
+                col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
+                table.getColumns().add(col);
+            }
+
+            // Fetching rows from the ResultSet and adding to the table
+            while (rs.next()) {
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    row.add(rs.getString(i));
+                }
+                table.getItems().add(row);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN); // This makes the table only as wide as necessary.
+
+        return table;
     }
 
 //    private void populateCategories() {
