@@ -11,8 +11,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.collections.ObservableList;
-<<<<<<< HEAD
-=======
+import javafx.event.ActionEvent;
+
 import javafx.geometry.Orientation;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
@@ -20,8 +20,6 @@ import java.text.DateFormat;
 import java.util.*;
 
 import java.text.SimpleDateFormat;
-
->>>>>>> 61dc7f5 (Finished calendar interval sales report. Finishing issue)
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
@@ -296,12 +294,7 @@ public class ManagerGUI {
                     ResultSet queryRes = handler.requestData(String.format("SELECT * FROM order_log WHERE date::DATE = \'%s\';", currentDate));
 
                     updateData(queryRes);
-<<<<<<< HEAD
-                    updateChart(ll);
-                    updateTable(queryRes);
-=======
                     updateChart(ll, null);
->>>>>>> 61dc7f5 (Finished calendar interval sales report. Finishing issue)
                 }
             });
             dayButton.setMaxWidth(Double.MAX_VALUE);
