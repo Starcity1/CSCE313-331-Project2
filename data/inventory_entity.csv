@@ -1,0 +1,126 @@
+inventoryid,name,quantity,required_quantity
+1,Brown Sugar Wow,6000,100
+2,Bubble,8000,100
+3,Mango Jelly,1800,100
+4,Aloe Jelly,320,100
+5,Nata Jelly,190,100
+6,Herbal Jelly,70,100
+7,Purple Yam,110,100
+8,Milk Cap,80,100
+9,Berry Crystal Bubble,200,100
+10,KF Black Tea,159,30
+11,KF Green Tea,229,30
+12,KF Oolong Tea,380,30
+13,KF Honey Tea,135,30
+14,Longan Jujube Tea,348,30
+15,Winter Melon Green Tea,99,30
+16,Brown Sugar Ginger,252,30
+17,Coffee,365,30
+18,Macchiato,250,30
+19,Mocha,307,30
+20,Latte,286,30
+21,Coffee Wow Milk Cap,275,30
+22,Pumpkin Coffee,306,30
+23,Cappuccino,257,30
+24,Pistachio Latte,219,30
+25,S'mores Coffee Slush,117,30
+26,KF Milk Tea,42,30
+27,Strawberry Milk Tea,123,30
+28,Peach Milk Tea,283,30
+29,Mango Milk Tea,88,30
+30,Roasted Chestnut Milk Tea,214,30
+31,KF Milk Green Tea,323,30
+32,Oolong Milk Tea,354,30
+33,Thai Milk Tea,150,30
+34,Coffee Milk Tea,275,30
+35,Taro Milk Tea,195,30
+36,Taro Milk Green Tea,383,30
+37,Coconut Milk Tea,349,30
+38,Almond Milk Tea,398,30
+39,Winter Melon Milk Green Tea,234,30
+40,Honey Milk Tea,27,30
+41,Honey Milk Green Tea,253,30
+42,Honey Oolong Milk Tea,305,30
+43,Rosehip Milk Tea,53,30
+44,Pistachio Milk Tea,133,30
+45,Roasted Chestnut Slush,36,30
+46,Taro Slush,245,30
+47,Boosted Guava Mango Slush,114,30
+48,Blueberry Creamsicle,349,30
+49,Red Bean Slush,126,30
+50,Matcha Red Bean Slush,344,30
+51,Fruity Flurry,260,30
+52,Mango Slush,207,30
+53,Cocoa Lava Slush,378,30
+54,Pineapple Slush,24,30
+55,Passion Fruit Slush,201,30
+56,Strawberry Milk Slush,297,30
+57,Honey Guava Slush,243,30
+58,Coffee Slush,177,30
+59,Mocha Slush,119,30
+60,Kiwi Yogurt Slush,67,30
+61,Caramel Macchiato Slush,42,30
+62,Pina Colada Slush,225,30
+63,Mango Snow,308,30
+64,Caribbean Breeze,292,30
+65,Sesame Slush,200,30
+66,Oreo Slush,316,30
+67,White Grape Slush,284,30
+68,Pistachio Almond Slush,388,30
+69,Yogurt Orange Juice,370,30
+70,Yogurt Grapefruit Juice,109,30
+71,Yogurt Green Tea,123,30
+72,Yogurt Strawberry Lemonade,230,30
+73,Yogurt Lemonade,308,30
+74,Yogurt Peach-ade,299,30
+75,Black Tea Wow Milk Cap,234,30
+76,Winter Melon Tea Cap,326,30
+77,Honey Black Tea Cap,341,30
+78,Honey Green Tea Cap,233,30
+79,Honey Oolong Tea Cap,144,30
+80,Sunshine Pineapple TeaCap,276,30
+81,Green Tea Wow Milk Cap,77,30
+82,Matcha Milk Cap,193,30
+83,Cocoa Cream Wow Milk Cap,89,30
+84,Oolong Tea Wow Milk Cap,133,30
+85,Pikmin Tropical Punch,240,30
+86,Mango Green Tea,124,30
+87,Peach Oolong Tea,215,30
+88,Orange Green Tea,125,30
+89,Guava Black Tea,117,30
+90,Guava Punch,184,30
+91,Grapefruit Green Tea,129,30
+92,Sunshine Pineapple Tea,114,30
+93,Kiwi Punch,312,30
+94,Strawberry Lemonade,341,30
+95,Strawberry Lemon Green Tea,266,30
+96,Passion Fruit Green Tea,57,30
+97,Lychee Black Tea,223,30
+98,Rosehip Lemonade,200,30
+99,Winter Melon Lemonade,44,30
+100,White Grape Punch,73,30
+101,Sunshine Grape-ade,315,30
+102,Cocoa Green/Original Wow,233,30
+103,Matcha Milk,260,30
+104,Winter Melon Milk,125,30
+105,Sesame Matcha Milk,198,30
+106,Chai Milk,154,30
+107,Ginger Milk,339,30
+108,Pumpkin Spice Latte,159,30
+109,Oreo Wow,275,30
+110,Red Bean Wow,143,30
+111,Cocoa,120,30
+112,Pikmin Tropical Slush,223,30
+113,Spirit Spooky Slush,299,30
+114,Pumpkin Slush,245,30
+115,Passion Fruit Swirl,154,30
+116,S'mores Slush,335,30
+117,Strawberry Cream,69,30
+118,Yellow Kung Fu Tea Hat,221,30
+119,Black Kung Fu Tea Hat,220,30
+120,Blue Kung Fu Tea Hat,216,30
+121,Pink Kung Fu Tea Hat,173,30
+122,Kung Fu Tea Magnet Set,236,30
+123,The Emoji Mug,368,30
+124,The Emoji Tumbler,152,30
+125,Essential Bundle,35,30
