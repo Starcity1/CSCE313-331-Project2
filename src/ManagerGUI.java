@@ -312,13 +312,11 @@ public class ManagerGUI {
 
                 Label priceLabel = new Label("Price: " + drinksRes.getDouble(5));
                 Label drinkQuantity = new Label("Qty: " + 0);
-                Button requestButton = new Button("Request More");
 
                 HBox.setHgrow(priceLabel, Priority.ALWAYS);
                 HBox.setHgrow(drinkQuantity, Priority.ALWAYS);
-                HBox.setHgrow(requestButton, Priority.ALWAYS);
 
-                drinkSection.getChildren().addAll(priceLabel, drinkQuantity, requestButton);
+                drinkSection.getChildren().addAll(priceLabel, drinkQuantity);
                 menuVBox.getChildren().add(drinkSection);
 
             }
