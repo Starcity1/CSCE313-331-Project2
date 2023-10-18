@@ -173,7 +173,11 @@ public class ManagerGUI {
         Button priceButton = new Button("Change Price To:");
         priceButton.setOnAction(e -> changePrice(lv.getSelectionModel().getSelectedItem(), priceField.getText()));
 
-        modBox.getChildren().addAll(addDeleteField, addDeleteButton, priceField, priceButton);
+        TextField quantityField = new TextField();
+        Button quantityButton = new Button("Change Quantity To:");
+        quantityButton.setOnAction(e -> changeQuantity(lv.getSelectionModel().getSelectedItem(), quantityField.getText()));
+
+        modBox.getChildren().addAll(addDeleteField, addDeleteButton, priceField, priceButton, quantityField, quantityButton);
 
         primaryGP.add(modBox, 1, 2);
 
@@ -205,16 +209,30 @@ public class ManagerGUI {
         handler.executeUpdate("UPDATE menu SET price = " + Double.toString(pc) + " WHERE name = '" + name + "';");
     }
 
+    private void changeQuantity(String name, String price){
+        int pc = Integer.parseInt(price);
+        if(name.charAt(name.length() - 1) == 'M' || name.charAt(name.length() - 1) == 'L'){
+            handler.executeUpdate("UPDATE inventory SET quantity = " + Integer.toString(pc) + " WHERE name = '" + name.substring(0, name.length() - 2) + "';");
+        }
+        else{
+            handler.executeUpdate("UPDATE inventory SET quantity = " + Integer.toString(pc) + " WHERE name = '" + name + "';");
+        }
+    }
+
     private void modifyList(String item, ComboBox combobox){
         ObservableList<String> ns = lv.getItems();
         if(ns.contains(item)){
             handler.executeUpdate("DELETE FROM menu WHERE name = '" + item + "';");
+            handler.executeUpdate("DELETE FROM inventory WHERE name = '" + item + "';");
         }
         else{
             int menuID = handler.requestInt("select MAX(menuid) from menu;") + 1;
             int invID = handler.requestInt("select MAX(inventoryid) from menu;") + 1;
             handler.executeUpdate(String.format("INSERT INTO menu (menuid, inventoryid, name, category, price) VALUES ('%d', '%d', '%s', '%s', '%.2f');"
             , menuID, invID, item, combobox.getValue(), 0.0));
+
+            handler.executeUpdate(String.format("INSERT INTO inventory (inventoryid, name, quantity, required_quantity) VALUES ('%d', '%s', '%d', '%d');",
+            invID, item, 0, 0));
         }
     }
 
@@ -305,13 +323,28 @@ public class ManagerGUI {
                 names.add(drinksRes.getString(3));
 
                 HBox drinkSection = new HBox();
+                drinkSection.setMinHeight(23);
                 drinkSection.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
                 drinkSection.setSpacing(20); // Add spacing between children
                 drinkSection.setAlignment(Pos.CENTER_LEFT);
                 HBox.setHgrow(drinkSection, Priority.ALWAYS); // Allow the parent to grow
 
                 Label priceLabel = new Label("Price: " + drinksRes.getDouble(5));
-                Label drinkQuantity = new Label("Qty: " + 0);
+
+
+                int quant = 0;
+                String name = drinksRes.getString(3);
+                if(name.charAt(name.length() - 1) == 'M' || name.charAt(name.length() - 1) == 'L'){
+                    System.out.println("Name: "  + name.substring(0, name.length()-2));
+                    if(!name.contains("'")){
+                        quant = handler.requestInt("SELECT quantity FROM inventory where name = '" + name.substring(0, name.length()-2) + "';");
+                    }
+                }
+                else{
+                    System.out.println("Name: "  + name);
+                    quant = handler.requestInt("SELECT quantity FROM inventory where name = '" + name + "';");
+                }
+                Label drinkQuantity = new Label("Qty: " + quant);
 
                 HBox.setHgrow(priceLabel, Priority.ALWAYS);
                 HBox.setHgrow(drinkQuantity, Priority.ALWAYS);
