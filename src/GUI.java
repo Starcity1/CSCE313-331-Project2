@@ -25,18 +25,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 public class GUI extends Application{
@@ -51,6 +46,7 @@ public class GUI extends Application{
     protected Button espresso;
     protected Button seasonal;
     protected Button limited;
+    protected Button merch;
     protected Boolean showBorders = true;
     protected Integer menu_rows = 4;
     protected Integer menu_cols = 3;
@@ -62,8 +58,7 @@ public class GUI extends Application{
     Order o;
 
     ObjectMapper mapper;
-    Map<String, Map<String, List<Double>>> drinkMap;
-    Map<String,Double> toppingsMap;
+    dbConnectionHandler handler;
 
     public EventHandler<MouseEvent> onClickHandler = new EventHandler<MouseEvent>() {
         @Override
@@ -72,7 +67,25 @@ public class GUI extends Application{
             
             // Array later becomes all other products in popups.
 
-            drinkPopup new_popup = new drinkPopup(drinkType, drinkMap, toppingsMap ,o);
+            try {
+                drinkPopup new_popup = new drinkPopup(drinkType, o, handler);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    public EventHandler<MouseEvent> onClickMerch = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent mouseEvent) {            
+            // Array later becomes all other products in popups.
+
+            try {
+                merchPopup new_popup = new merchPopup(o, handler);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         }
     };
@@ -81,16 +94,16 @@ public class GUI extends Application{
     public void start(Stage primaryStage) throws Exception {
 
         mapper = new ObjectMapper();
-        drinkMap = mapper.readValue(new File("data\\drinks.json"), Map.class);
-        toppingsMap = mapper.readValue(new File("data\\toppings.json"), Map.class);
 
-        dbConnectionHandler handler = new dbConnectionHandler();
+        handler = new dbConnectionHandler();
 
         Order.orderIDCounter = handler.requestInt("select MAX(orderid) from order_log;") + 1;
 
         Drink.drinkIDCounter = handler.requestInt("select MAX(drinkid) from drink;") + 1;
 
-        o = new Order();    
+        Merch.merchIDCounter = handler.requestInt("select MAX(merchid) from merchandise;") + 1;
+
+        o = new Order(handler);    
 
 
         this.primaryStage = primaryStage;
@@ -148,10 +161,17 @@ public class GUI extends Application{
         espresso.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
         limited = new Button();
-        limited.setText("New Drinks");
+        limited.setText("What's New");
         limited.setStyle("-fx-font:18px Tahoma;");
         limited.setPadding(new Insets(30, 30, 30, 30));
         limited.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickHandler);
+
+        merch = new Button();
+        merch.setText("Merchandise");
+        merch.setStyle("-fx-font:18px Tahoma;");
+        merch.setPadding(new Insets(30, 30, 30, 30));
+        merch.addEventFilter(MouseEvent.MOUSE_CLICKED, onClickMerch);
+
 
         // To Manager's GUI!!!
         Button managerGUI = new Button("ManagerGUI:");
@@ -179,6 +199,7 @@ public class GUI extends Application{
         GridPane.setConstraints(milk_strike, 0, 3);
         GridPane.setConstraints(espresso, 1, 3);
         GridPane.setConstraints(limited, 2, 3);
+        GridPane.setConstraints(merch, 0, 4);
 
         for (int i = 0; i < menu_cols; i++) {
             ColumnConstraints column = new ColumnConstraints();
@@ -192,7 +213,7 @@ public class GUI extends Application{
             menu.getRowConstraints().add(row);
         }
 
-        menu.getChildren().addAll(managerGUI, classic, milk_tea, punch, milk_cap, yogurt, slush, milk_strike, espresso, limited);
+        menu.getChildren().addAll(managerGUI, classic, milk_tea, punch, milk_cap, yogurt, slush, milk_strike, espresso, limited, merch);
 
         VBox orderArea = new VBox();
         HBox.setHgrow(orderArea, Priority.SOMETIMES);
@@ -220,6 +241,8 @@ public class GUI extends Application{
         Timeline updateTimeline = new Timeline(
             new KeyFrame(Duration.seconds(1), event -> {
             ArrayList<Drink> d = o.getDrinks();
+            ArrayList<Merch> s = o.getMerch();
+            orderGridPane.getChildren().clear();
             if(d != null){
                 for(int i = 0; i < d.size(); i++){
                     Label drinkLabel = new Label(d.get(i).getName());
@@ -232,7 +255,24 @@ public class GUI extends Application{
                     GridPane.setConstraints(priceLabel, 2, i + 1);
                     orderGridPane.getChildren().addAll(drinkLabel, drinkQuantityLabel, priceLabel);
                 }
-                totalCost = (float)o.calcPrice();
+            }
+            if(o != null){
+                for(int i = 0; i < s.size(); i++){
+                    Label drinkLabel = new Label(s.get(i).getName());
+                    Label drinkQuantityLabel = new Label("1"); // Replace this with the actual quantity
+                    Label priceLabel = new Label(Double.toString(s.get(i).calcPrice()));
+            
+                    // Adjust the row index to start from 1, not -1
+                    GridPane.setConstraints(drinkLabel, 0, i + 1 + d.size());
+                    GridPane.setConstraints(drinkQuantityLabel, 1, i + 1 + d.size());
+                    GridPane.setConstraints(priceLabel, 2, i + 1 + d.size());
+                    orderGridPane.getChildren().addAll(drinkLabel, drinkQuantityLabel, priceLabel);
+                }
+                try {
+                    totalCost = (float)o.calcPrice();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 totalLabel.setText(String.format("Total:\t%.2f$", totalCost));
             }
             })
@@ -252,7 +292,7 @@ public class GUI extends Application{
         orderArea.getChildren().addAll(orderLabel, orderGridPane, payArea);
 
         // Go to pay page.
-        PayPopup pp = new PayPopup(handler, o, toppingsMap);
+        PayPopup pp = new PayPopup(handler, o);
         payButton.addEventHandler(MouseEvent.MOUSE_CLICKED, pp.payHandle);
 
         //orderArea.getChildren().addAll(orderLabel, orderGridPane, totalLabel);

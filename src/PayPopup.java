@@ -1,3 +1,5 @@
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,12 +22,10 @@ public class PayPopup extends GUI {
     dbConnectionHandler db;
     Order ord;
     private double tip = 0.0;
-    Map<String,Double> toppingsMap;
 
-    PayPopup(dbConnectionHandler handler, Order o, Map<String,Double> toppingsMap){
+    PayPopup(dbConnectionHandler handler, Order o){
         db = handler;
         ord = o;
-        this.toppingsMap = toppingsMap;
     }
 
     public EventHandler<MouseEvent> payHandle = new EventHandler<>() {
@@ -99,6 +99,7 @@ public class PayPopup extends GUI {
                 @Override
                 public void handle(MouseEvent mouseEvent1) {
                     ArrayList<Drink> drinks = ord.getDrinks();
+                    ArrayList<Merch> merch = ord.getMerch();
                     int empID = 0001;
                     
                     LocalDate currentDate = LocalDate.now();
@@ -111,14 +112,29 @@ public class PayPopup extends GUI {
                         drinks.get(i).getDrinkID(), ord.getOrderID(), drinks.get(i).getName(), drinks.get(i).getCategory(), drinks.get(i).getSize(), drinks.get(i).getTemp(), drinks.get(i).getIce_level(), drinks.get(i).getSugar_level(), drinks.get(i).getPrice()));
                         ArrayList<String> tpp = drinks.get(i).getToppings();
                         for(int j = 0; j < tpp.size(); j++){
-                            db.executeUpdate(String.format("INSERT INTO topping (toppingid, drinkid, name, quantity, price) VALUES ('%s', '%s', '%s', '%d', '%.2f');",
-                            tpID, drinks.get(i).getDrinkID(), tpp.get(j), 1, toppingsMap.get(tpp.get(j))));
+                            try {
+                                ResultSet r2 = db.requestData("SELECT price FROM menu where name = '"+ tpp.get(j) + "';");
+                                r2.next();
+                                db.executeUpdate(String.format("INSERT INTO topping (toppingid, drinkid, name, quantity, price) VALUES ('%s', '%s', '%s', '%d', '%.2f');",
+                                tpID, drinks.get(i).getDrinkID(), tpp.get(j), 1, r2.getDouble(1)));
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
                             tpID++;
                         }
                     }
+                    for(int i = 0; i < merch.size(); i++) {
+                        db.executeUpdate(String.format("INSERT INTO merchandise (merchid, orderid, name, price) VALUES ('%d', '%d', '%s', '%.2f');", merch.get(i).getMerchID(), ord.getOrderID(), merch.get(i).getName(), merch.get(i).calcPrice()));
+                    }
+                    double calP = 0.0;
+                    try {
+                        calP = ord.calcPrice();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     String insertQuery = String.format(
                         "INSERT INTO order_log (orderID, empID, date, time, total, tip) VALUES (%d, %d, '%s', '%s', %f, %f);",
-                        ord.orderID, empID, currentDate, currentTime, ord.calcPrice(), tip
+                        ord.orderID, empID, currentDate, currentTime, calP, tip
                     );
                     db.executeUpdate(insertQuery);
 
