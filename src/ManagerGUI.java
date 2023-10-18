@@ -11,18 +11,29 @@ import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.collections.ObservableList;
+<<<<<<< HEAD
+=======
+import javafx.geometry.Orientation;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.ChangeListener;
+import java.text.DateFormat;
+import java.util.*;
+
+import java.text.SimpleDateFormat;
+
+>>>>>>> 61dc7f5 (Finished calendar interval sales report. Finishing issue)
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
 import javafx.beans.property.SimpleStringProperty;
 
-import java.util.List;
 import javafx.scene.chart.XYChart;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 
 import java.sql.*;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 public class ManagerGUI {
@@ -31,6 +42,7 @@ public class ManagerGUI {
     private ObservableList<ObservableList> data;
     private TableView table;
     private LineChart<Number, Number> ll;
+    private String currentDate = "2022-01-01";
 
     ManagerGUI(dbConnectionHandler handler) {
         currentYearMonth = YearMonth.now();
@@ -42,7 +54,7 @@ public class ManagerGUI {
         primaryStage.setMinWidth(800);
         GridPane primaryGP = new GridPane();
 
-        ResultSet queryRes = handler.requestData("SELECT * FROM order_log WHERE date::DATE = \'2022-01-11\';");
+        ResultSet queryRes = handler.requestData("SELECT * FROM order_log WHERE date::DATE = \'2022-01-01\';");
         updateData(queryRes);
 
         // Tab seciton
@@ -69,6 +81,55 @@ public class ManagerGUI {
         calendarGridPane.add(prevButton, 0, 0);
         calendarGridPane.add(new Label(currentYearMonth.toString()), 1, 0);
         calendarGridPane.add(nextButton, 2, 0);
+        ComboBox calendarCB = new ComboBox();
+        calendarCB.setPromptText("-- Select --");
+        calendarCB.getItems().addAll("1 Day", "1 Week", "1 Month", "1 Year");
+        calendarCB.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date curDateConverted = sdf.parse(currentDate);
+                    // Create new date.
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(curDateConverted);
+                    String newMaxDate;
+                    switch (calendarCB.getValue().toString()) {
+                        case "1 Day":
+                            c.add(Calendar.DATE, 1);
+                            newMaxDate = sdf.format(c.getTime());
+                            break;
+                        case "1 Week":
+                            c.add(Calendar.DATE, 7);
+                            newMaxDate = sdf.format(c.getTime());
+                            break;
+                        case "1 Month":
+                            c.add(Calendar.DATE, 30);
+                            newMaxDate = sdf.format(c.getTime());
+                            break;
+                        case "1 Year":
+                            c.add(Calendar.DATE, 365);
+                            newMaxDate = sdf.format(c.getTime());
+                            break;
+                        default:
+                            newMaxDate = sdf.format(curDateConverted);
+                    }
+
+                    System.out.println(String.format("SELECT * " +
+                            "FROM order_log " +
+                            "WHERE date >= \'%s\' AND date <= \'%s\';", currentDate, newMaxDate));
+
+                    // Update data.
+                    ResultSet newData = handler.requestData
+                            (String.format("SELECT * FROM order_log WHERE date >= \'%s\' AND date <= \'%s\';", currentDate, newMaxDate));
+                    updateData(newData);
+                    updateChart(ll, newMaxDate);
+                } catch (Exception e) {
+                    showAndThrowError("Error: Invalid date was given!");
+                }
+            }
+        });
+        calendarGridPane.add(calendarCB, 7, 0);
         populateCalendar(calendarGridPane);
         chartCalendarSection.getChildren().add(calendarGridPane);
         mainSection.getChildren().add(chartCalendarSection);
@@ -116,7 +177,7 @@ public class ManagerGUI {
         NumberAxis y = new NumberAxis();
         y.setLabel("Orders made");
         ll = new LineChart(x,y);
-        ll.setTitle("Orders made.");
+        ll.setTitle("Orders made from " + currentDate);
         List<String> xData = data.stream().map(row -> row.get(3).toString()).collect(Collectors.toList());
         List<Double> yData = data.stream().map(row -> Double.parseDouble(row.get(4).toString())).collect(Collectors.toList());
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
@@ -130,7 +191,7 @@ public class ManagerGUI {
         return ll;
     }
 
-    private void updateChart(LineChart ll) {
+    private void updateChart(LineChart ll, String maxDate) {
         ll.getData().clear();
         List<String> xData = data.stream().map(row -> row.get(3).toString()).collect(Collectors.toList());
         List<Double> yData = data.stream().map(row -> Double.parseDouble(row.get(4).toString())).collect(Collectors.toList());
@@ -140,6 +201,12 @@ public class ManagerGUI {
             series.getData().add(new XYChart.Data<Number, Number>(i, yData.get(i)));
         }
         series.setName("Total Cost over 1-day period.");
+        // Formatting result
+        if(maxDate != null)
+            ll.setTitle("Orders made from " + currentDate + " to " + maxDate);
+        else
+            ll.setTitle("Orders made from " + currentDate);
+
         ll.getData().add(series);
     }
 
@@ -224,13 +291,17 @@ public class ManagerGUI {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     String day = String.format("%02d", Integer.parseInt(((Button) mouseEvent.getSource()).getText().toString()));
-                    String currentDate = currentYearMonth.toString() + "-" + day;
+                    currentDate = currentYearMonth.toString() + "-" + day;
                     dbConnectionHandler handler = new dbConnectionHandler();
                     ResultSet queryRes = handler.requestData(String.format("SELECT * FROM order_log WHERE date::DATE = \'%s\';", currentDate));
 
                     updateData(queryRes);
+<<<<<<< HEAD
                     updateChart(ll);
                     updateTable(queryRes);
+=======
+                    updateChart(ll, null);
+>>>>>>> 61dc7f5 (Finished calendar interval sales report. Finishing issue)
                 }
             });
             dayButton.setMaxWidth(Double.MAX_VALUE);
